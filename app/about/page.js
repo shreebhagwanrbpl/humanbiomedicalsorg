@@ -1,6 +1,17 @@
 "use client";
 
-export default function AboutPage() {
+export default function AboutPage({
+  district,
+}) {
+
+  const city = district
+    ?.replace(/-/g, " ")
+    ?.replace(
+      /\b\w/g,
+      (char) =>
+        char.toUpperCase()
+    );
+
   return (
     <main className="relative overflow-hidden">
 
@@ -18,18 +29,21 @@ export default function AboutPage() {
           <div className="text-center max-w-4xl mx-auto">
 
             <span className="glass px-5 py-2 rounded-full text-sm font-medium text-slate-700 inline-block">
-              About Rajbiosis Pvt Ltd
+              About Human Biosis Pvt Ltd
+              {city && ` in ${city}`}
             </span>
 
             <h1 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
               Leading Laboratory & Hospital Equipment Company
+              {city && ` in ${city}`}
             </h1>
 
             <p className="mt-8 text-lg sm:text-xl text-slate-600 leading-9">
-              Rajbiosis Pvt Ltd is a trusted healthcare equipment company
+              Human Biosis Pvt Ltd is a trusted healthcare equipment company
               specializing in premium laboratory instruments, hospital
               machines, diagnostic systems, pathology equipment,
-              healthcare devices, and advanced medical technology solutions.
+              healthcare devices, and advanced medical technology solutions
+              {city && ` in ${city}`}.
             </p>
 
           </div>
@@ -42,11 +56,13 @@ export default function AboutPage() {
 
               <h2 className="text-4xl font-bold text-slate-900 leading-tight">
                 Delivering Advanced Healthcare Technology Solutions
+                {city && ` in ${city}`}
               </h2>
 
               <p className="mt-8 text-lg text-slate-600 leading-9">
                 We help hospitals, pathology laboratories, research centers,
-                clinics, and healthcare institutions build reliable and
+                clinics, and healthcare institutions
+                {city && ` in ${city}`} build reliable and
                 modern medical infrastructure with premium healthcare
                 equipment and advanced diagnostic systems.
               </p>
@@ -55,13 +71,15 @@ export default function AboutPage() {
                 Our company focuses on delivering high-quality laboratory
                 machines, hospital devices, diagnostic instruments,
                 pathology systems, and medical equipment solutions
-                designed for modern healthcare environments.
+                designed for modern healthcare environments
+                {city && ` in ${city}`}.
               </p>
 
               {/* Stats */}
               <div className="mt-14 grid grid-cols-2 gap-6">
 
                 <div className="glass rounded-[28px] p-8">
+
                   <h3 className="text-4xl font-bold text-violet-600">
                     500+
                   </h3>
@@ -69,9 +87,11 @@ export default function AboutPage() {
                   <p className="mt-3 text-slate-600">
                     Equipment Deliveries
                   </p>
+
                 </div>
 
                 <div className="glass rounded-[28px] p-8">
+
                   <h3 className="text-4xl font-bold text-violet-600">
                     100+
                   </h3>
@@ -79,6 +99,7 @@ export default function AboutPage() {
                   <p className="mt-3 text-slate-600">
                     Hospitals Served
                   </p>
+
                 </div>
 
               </div>
@@ -89,11 +110,13 @@ export default function AboutPage() {
             <div className="relative">
 
               <div className="glass rounded-[40px] p-5 shadow-2xl">
+
                 <img
                   src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1200&auto=format&fit=crop"
-                  alt="Laboratory and hospital equipment"
+                  alt={`Laboratory and hospital equipment ${city ? `in ${city}` : ""}`}
                   className="w-full h-[600px] object-cover rounded-[30px]"
                 />
+
               </div>
 
             </div>
@@ -103,66 +126,81 @@ export default function AboutPage() {
         </div>
 
       </section>
+
       {/* Mission & Vision */}
       <section className="pb-28 relative z-10">
+
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
           <div className="grid lg:grid-cols-2 gap-10">
 
             {/* Mission */}
             <div className="glass rounded-[32px] p-10 shadow-xl">
+
               <span className="px-4 py-2 rounded-full bg-violet-100 text-violet-700 text-sm font-semibold">
                 Our Mission
               </span>
 
               <h2 className="mt-7 text-4xl font-bold text-slate-900">
                 Delivering Advanced Healthcare Technology
+                {city && ` in ${city}`}
               </h2>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
-                Rajbiosis Pvt Ltd focuses on delivering premium laboratory
+                Human Biosis Pvt Ltd focuses on delivering premium laboratory
                 instruments, hospital machines, diagnostic systems,
                 pathology equipment, and healthcare technology solutions
-                designed for modern healthcare institutions.
+                designed for modern healthcare institutions
+                {city && ` in ${city}`}.
               </p>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
                 Our mission is to help hospitals, laboratories,
                 diagnostic centers, and healthcare organizations
-                build advanced medical infrastructure with reliable
-                and high-performance medical equipment solutions.
+                {city && ` in ${city}`} build advanced medical
+                infrastructure with reliable and high-performance
+                medical equipment solutions.
               </p>
+
             </div>
 
             {/* Vision */}
             <div className="glass rounded-[32px] p-10 shadow-xl">
+
               <span className="px-4 py-2 rounded-full bg-sky-100 text-sky-700 text-sm font-semibold">
                 Our Vision
               </span>
 
               <h2 className="mt-7 text-4xl font-bold text-slate-900">
                 Building Modern Medical Infrastructure
+                {city && ` in ${city}`}
               </h2>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
                 We aim to become one of the most trusted healthcare
                 equipment suppliers by providing advanced medical
-                technology solutions and quality healthcare products.
+                technology solutions and quality healthcare products
+                {city && ` in ${city}`}.
               </p>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
-                Rajbiosis Pvt Ltd continuously works towards innovation,
+                Human Biosis Pvt Ltd continuously works towards innovation,
                 customer satisfaction, and long-term healthcare partnerships
-                across hospitals, pathology labs, and medical institutions.
+                across hospitals, pathology labs, and medical institutions
+                {city && ` in ${city}`}.
               </p>
+
             </div>
 
           </div>
+
         </div>
+
       </section>
 
       {/* Why Choose Us */}
       <section className="pb-28 relative z-10">
+
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
           {/* Heading */}
@@ -170,16 +208,19 @@ export default function AboutPage() {
 
             <span className="glass px-5 py-2 rounded-full text-sm font-medium text-slate-700 inline-block">
               Why Choose Us
+              {city && ` in ${city}`}
             </span>
 
             <h2 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
               Trusted Healthcare Equipment Partner
+              {city && ` in ${city}`}
             </h2>
 
             <p className="mt-8 text-lg sm:text-xl text-slate-600 leading-9">
-              Rajbiosis Pvt Ltd delivers reliable healthcare equipment
+              Human Biosis Pvt Ltd delivers reliable healthcare equipment
               solutions for hospitals, laboratories, research centers,
-              clinics, and healthcare institutions across India.
+              clinics, and healthcare institutions
+              {city && ` across ${city}`}.
             </p>
 
           </div>
@@ -200,7 +241,8 @@ export default function AboutPage() {
 
               <p className="mt-5 text-slate-600 leading-8">
                 High-quality laboratory instruments, diagnostic systems,
-                hospital devices, and healthcare technology solutions.
+                hospital devices, and healthcare technology solutions
+                {city && ` in ${city}`}.
               </p>
 
             </div>
@@ -218,7 +260,8 @@ export default function AboutPage() {
 
               <p className="mt-5 text-slate-600 leading-8">
                 Advanced medical equipment and pathology systems
-                designed for modern healthcare environments.
+                designed for modern healthcare environments
+                {city && ` in ${city}`}.
               </p>
 
             </div>
@@ -236,17 +279,21 @@ export default function AboutPage() {
 
               <p className="mt-5 text-slate-600 leading-8">
                 Professional installation support, product guidance,
-                and long-term customer service solutions.
+                and long-term customer service solutions
+                {city && ` in ${city}`}.
               </p>
 
             </div>
 
           </div>
+
         </div>
+
       </section>
 
       {/* Company Timeline */}
       <section className="pb-28 relative z-10">
+
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
           {/* Heading */}
@@ -258,6 +305,7 @@ export default function AboutPage() {
 
             <h2 className="mt-8 text-4xl sm:text-5xl font-bold text-slate-900">
               Our Growth Timeline
+              {city && ` in ${city}`}
             </h2>
 
           </div>
@@ -276,8 +324,9 @@ export default function AboutPage() {
               </h4>
 
               <p className="mt-5 text-slate-600 leading-8">
-                Rajbiosis Pvt Ltd started with a vision to provide
-                premium laboratory and hospital equipment solutions.
+                Human Biosis Pvt Ltd started with a vision to provide
+                premium laboratory and hospital equipment solutions
+                {city && ` in ${city}`}.
               </p>
 
             </div>
@@ -294,7 +343,8 @@ export default function AboutPage() {
 
               <p className="mt-5 text-slate-600 leading-8">
                 Expanded medical equipment and diagnostic system
-                supply services across multiple healthcare sectors.
+                supply services across multiple healthcare sectors
+                {city && ` in ${city}`}.
               </p>
 
             </div>
@@ -311,14 +361,18 @@ export default function AboutPage() {
 
               <p className="mt-5 text-slate-600 leading-8">
                 Serving hospitals, laboratories, clinics, and
-                healthcare institutions with premium medical solutions.
+                healthcare institutions with premium medical solutions
+                {city && ` in ${city}`}.
               </p>
 
             </div>
 
           </div>
+
         </div>
+
       </section>
+
     </main>
   );
 }

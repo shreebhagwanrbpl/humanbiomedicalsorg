@@ -1,17 +1,23 @@
-import Home from "../Home/page";
+import HomePage from "../page";
 
-export default async function Page({ params }) {
+export default async function Page({
+  params,
+}) {
 
-  const resolvedParams = await params;
+  const resolvedParams =
+    await params;
 
   const district =
-    resolvedParams?.district || "jaipur";
+    resolvedParams?.district ||
+    "jaipur";
 
   const city = district
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) =>
-      char.toUpperCase()
+    .replace(
+      /\b\w/g,
+      (char) =>
+        char.toUpperCase()
     );
 
-  return <Home city={city} />;
+  return <HomePage city={city} />;
 }

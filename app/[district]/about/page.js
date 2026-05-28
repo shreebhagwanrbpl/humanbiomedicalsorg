@@ -1,9 +1,17 @@
 import About from "@/app/about/page";
 
-export default async function DistrictAboutPage({ params }) {
-  const resolvedParams = await params;
+export default async function DistrictAboutPage({
+  params,
+}) {
 
-  const district = resolvedParams?.district || "jaipur";
+  const resolvedParams =
+    await params;
 
-  return <About district={district} />;
+  const district =
+    resolvedParams?.district;
+
+  return (
+    <About district={district} />
+  );
+
 }

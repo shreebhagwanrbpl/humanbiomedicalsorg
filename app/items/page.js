@@ -29,7 +29,7 @@ const categories = [
   "Pathology",
 ];
 
-export default function ProductsPage() {
+export default function ItemsPage(city,) {
 
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] =
@@ -218,7 +218,7 @@ export default function ProductsPage() {
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex items-center rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Rajbiosis Pvt Ltd
+              Human Biosis Pvt Ltd
             </span>
 
             <motion.h1
@@ -227,13 +227,16 @@ export default function ProductsPage() {
               transition={{ duration: 0.7 }}
               className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-slate-900"
             >
-              Laboratory & Hospital Equipment Solutions
+              {city
+                ? `${city} Laboratory & Hospital Equipment Solutions`
+                : "Laboratory & Hospital Equipment Solutions"}
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
               Premium laboratory instruments, diagnostic systems,
               hospital machines, pathology devices,
-              and healthcare technology solutions.
+              and healthcare technology solutions
+              {city ? ` in ${city}` : ""}.
             </p>
 
           </div>
@@ -414,7 +417,7 @@ export default function ProductsPage() {
                 <div className="p-6">
 
                   <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
-                    Rajbiosis Pvt Ltd
+                    Human Biosis Pvt Ltd
                   </p>
 
                   <h3 className="mt-3 text-2xl font-bold leading-snug text-slate-900">
@@ -468,7 +471,7 @@ export default function ProductsPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Rajbiosis Pvt Ltd for laboratory instruments,
+                Contact Human Biosis Pvt Ltd for laboratory instruments,
                 diagnostic systems, pathology devices,
                 and hospital equipment solutions.
               </p>
@@ -534,7 +537,7 @@ export default function ProductsPage() {
 
               {/* Description */}
               <p className="mt-8 text-lg leading-8 text-slate-600">
-                Contact Rajbiosis Pvt Ltd for premium laboratory
+                Contact Human Biosis Pvt Ltd for premium laboratory
                 instruments, pathology systems, diagnostic devices,
                 hospital equipment, and healthcare technology solutions.
               </p>
@@ -565,7 +568,7 @@ export default function ProductsPage() {
                     </h3>
 
                     <div className="mt-3 inline-flex px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
-                      Rajbiosis Pvt Ltd
+                      Human Biosis Pvt Ltd
                     </div>
 
                     <p className="mt-3 text-sm leading-6 text-slate-600 line-clamp-2">

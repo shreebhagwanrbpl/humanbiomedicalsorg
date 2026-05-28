@@ -1,7 +1,5 @@
 "use client";
-
 import Link from "next/link";
-
 import {
   Facebook,
   Instagram,
@@ -11,7 +9,14 @@ import {
   MapPin,
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  usePathname,
+} from "next/navigation";
 
 import { db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -19,7 +24,29 @@ import { doc, getDoc } from "firebase/firestore";
 export default function Footer() {
 
   const [contactInfo, setContactInfo] = useState([]);
+  const pathname =
+    usePathname();
 
+  // DISTRICT DETECT
+  const pathParts =
+    pathname.split("/");
+
+  const district =
+    pathParts[1] &&
+      ![
+        "about",
+        "items",
+        "services",
+        "contact",
+      ].includes(pathParts[1])
+      ? pathParts[1]
+      : "";
+
+  // DYNAMIC BASE
+  const basePath =
+    district
+      ? `/${district}`
+      : "";
   // FETCH FIREBASE DATA
   useEffect(() => {
 
@@ -56,7 +83,6 @@ export default function Footer() {
     fetchData();
 
   }, []);
-
   // GET VALUE BY LABEL
   const getValue = (...labels) => {
 
@@ -71,7 +97,30 @@ export default function Footer() {
     return found?.value || "";
 
   };
+  const originalAddress =
+    getValue(
+      "Address",
+      "Office Location"
+    );
 
+  const city = district
+    ?.replace(/-/g, " ")
+    ?.replace(
+      /\b\w/g,
+      (char) =>
+        char.toUpperCase()
+    );
+
+  const state =
+    getValue("State");
+
+  const finalAddress =
+    city &&
+      state &&
+      city.toLowerCase() !==
+      "jaipur"
+      ? `${city}, ${state}, India`
+      : originalAddress;
   return (
     <footer className="pt-10">
 
@@ -132,35 +181,35 @@ export default function Footer() {
             <div className="mt-6 flex flex-col gap-4">
 
               <Link
-                href="/"
+                href={`${basePath}/`}
                 className="text-slate-600 hover:text-violet-600 transition"
               >
                 Home
               </Link>
 
               <Link
-                href="/about"
+                href={`${basePath}/about`}
                 className="text-slate-600 hover:text-violet-600 transition"
               >
                 About Us
               </Link>
 
               <Link
-                href="/products"
+                href={`${basePath}/items`}
                 className="text-slate-600 hover:text-violet-600 transition"
               >
                 Products
               </Link>
 
               <Link
-                href="/services"
+                href={`${basePath}/services`}
                 className="text-slate-600 hover:text-violet-600 transition"
               >
                 Services
               </Link>
 
               <Link
-                href="/contact"
+                href={`${basePath}/contact`}
                 className="text-slate-600 hover:text-violet-600 transition"
               >
                 Contact
@@ -252,7 +301,7 @@ export default function Footer() {
 
                 {/* DYNAMIC */}
                 <p className="text-slate-600 leading-7">
-                  {getValue("Address", "Office Location")}
+                  {finalAddress}
                 </p>
 
               </div>
@@ -267,7 +316,7 @@ export default function Footer() {
         <div className="mt-16 py-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-5">
 
           <p className="text-slate-500 text-sm text-center md:text-left">
-            © 2026 {getValue("Company", "Company Name") || "Rajbiosis Pvt Ltd"}.
+            © 2026 {getValue("Company", "Company Name") || "Human Biosis Pvt Ltd"}.
             All rights reserved.
           </p>
 

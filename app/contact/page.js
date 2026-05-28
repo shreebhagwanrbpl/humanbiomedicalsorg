@@ -27,7 +27,10 @@ import {
 
 import toast, { Toaster } from "react-hot-toast";
 
-export default function ContactPage() {
+export default function ContactPage({
+  city,
+  state,
+}) {
 
   const [contactInfo, setContactInfo] = useState([]);
 
@@ -92,7 +95,19 @@ export default function ContactPage() {
     return found?.value || "";
 
   };
+  const originalAddress =
+    getValue(
+      "Address",
+      "Office Location"
+    );
 
+  const finalAddress =
+    city &&
+      state &&
+      city.toLowerCase() !==
+      "jaipur"
+      ? `${city}, ${state}, India`
+      : originalAddress;
   // HANDLE INPUT
   const handleChange = (e) => {
 
@@ -192,7 +207,7 @@ export default function ContactPage() {
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Contact Rajbiosis Pvt Ltd
+              Contact Human Biosis Pvt Ltd
             </span>
 
             <motion.h1
@@ -205,7 +220,7 @@ export default function ContactPage() {
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Contact Rajbiosis Pvt Ltd for premium laboratory
+              Contact Human Biosis Pvt Ltd for premium laboratory
               instruments, diagnostic systems,
               pathology equipment, and hospital technology solutions.
             </p>
@@ -302,7 +317,7 @@ export default function ContactPage() {
                     </p>
 
                     <h3 className="mt-2 text-xl font-bold text-slate-900">
-                      {getValue("Address", "Office Location")}
+                      {finalAddress}
                     </h3>
                   </div>
 

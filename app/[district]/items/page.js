@@ -1,9 +1,27 @@
-import ItemsPage from "@/app/items/page";
+import ItemsPage from "../items/page";
 
-export default async function DistrictItemsPage({ params }) {
-  const resolvedParams = await params;
+export default async function DistrictItemsPage({
+  params,
+}) {
 
-  const district = resolvedParams?.district || "jaipur";
+  const resolvedParams =
+    await params;
 
-  return <ItemsPage city={district} />;
+  const district =
+    resolvedParams?.district;
+
+  const city = district
+    ? district
+      .replace(/-/g, " ")
+      .replace(
+        /\b\w/g,
+        (char) =>
+          char.toUpperCase()
+      )
+    : "";
+
+  return (
+    <ItemsPage city={city} />
+  );
+
 }

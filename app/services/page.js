@@ -37,7 +37,7 @@ const process = [
   "Technical Support",
 ];
 
-export default function ServicesPage() {
+export default function ServicesPage(city,) {
 
   const [services, setServices] = useState([]);
 
@@ -94,7 +94,7 @@ export default function ServicesPage() {
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Rajbiosis Pvt Ltd Services
+              Human Biosis Pvt Ltd Services
             </span>
 
             <motion.h1
@@ -103,14 +103,17 @@ export default function ServicesPage() {
               transition={{ duration: 0.7 }}
               className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-slate-900"
             >
-              Healthcare & Laboratory Equipment Services
+              {city
+                ? `${city} Healthcare & Laboratory Equipment Services`
+                : "Healthcare & Laboratory Equipment Services"}
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Rajbiosis Pvt Ltd provides premium laboratory
+              Human Biosis Pvt Ltd provides premium laboratory
               equipment solutions, hospital machinery,
               diagnostic systems, healthcare technology,
-              installation support, and medical infrastructure services.
+              installation support, and medical infrastructure services
+              {city ? ` in ${city}` : ""}.
             </p>
 
           </div>
@@ -281,7 +284,7 @@ export default function ServicesPage() {
               </h2>
 
               <p className="mt-8 text-lg leading-9 text-slate-600">
-                Rajbiosis Pvt Ltd delivers premium healthcare
+                Human Biosis Pvt Ltd delivers premium healthcare
                 technology solutions with quality assurance,
                 reliable support, fast delivery,
                 and advanced laboratory equipment expertise.
@@ -346,7 +349,7 @@ export default function ServicesPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Rajbiosis Pvt Ltd for premium laboratory
+                Contact Human Biosis Pvt Ltd for premium laboratory
                 instruments, hospital equipment,
                 pathology systems, and diagnostic devices.
               </p>

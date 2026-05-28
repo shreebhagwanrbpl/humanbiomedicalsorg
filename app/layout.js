@@ -21,9 +21,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Rajbiosis Pvt Ltd | Laboratory & Hospital Equipment Supplier",
+  title: "Human Biosis Pvt Ltd | Laboratory & Hospital Equipment Supplier",
   description:
-    "Rajbiosis Pvt Ltd supplies premium laboratory instruments, pathology systems, diagnostic devices, hospital equipment, and healthcare technology solutions.",
+    "Human Biosis Pvt Ltd supplies premium laboratory instruments, pathology systems, diagnostic devices, hospital equipment, and healthcare technology solutions.",
 
   keywords: [
     "laboratory instruments",
@@ -33,7 +33,7 @@ export const metadata = {
     "healthcare devices",
     "medical laboratory equipment",
     "hospital machines",
-    "Rajbiosis Pvt Ltd",
+    "Human Biosis Pvt Ltd",
     "healthcare technology",
     "medical equipment supplier India"
   ],
