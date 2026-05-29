@@ -9,15 +9,10 @@ export default function HomePage({
 
   return (
     <main>
-
       <Hero city={city} />
-
       <Features city={city} />
-
       <Products city={city} />
-
       <Testimonials city={city} />
-
     </main>
   );
 }

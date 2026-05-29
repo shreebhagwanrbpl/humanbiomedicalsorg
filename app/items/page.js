@@ -1,6 +1,10 @@
 "use client";
-// ADD THESE IMPORTS
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter }
+from "next/navigation";
+
+const router =
+  useRouter();
 
 import {
   doc,
@@ -55,42 +59,63 @@ export default function ItemsPage(city,) {
   // FETCH PRODUCTS FROM FIREBASE
   useEffect(() => {
 
-    const fetchProducts = async () => {
+  const fetchProducts = async () => {
 
-      try {
+  try {
 
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "humanbiomedicalsorg",
-            "pages",
-            "products"
-          )
+    // CACHE CHECK
+    const cacheKey =
+      "products_cache";
+
+    const cached =
+      localStorage.getItem(
+        cacheKey
+      );
+
+    if (cached) {
+
+      setProducts(
+        JSON.parse(cached)
+      );
+      setLoading(false);
+      return;
+    }
+    // FIREBASE CALL
+    const snap = await getDoc(
+      doc(
+        db,
+        "websites",
+        "humanbiomedicalsorg",
+        "pages",
+        "products"
+      )
+    );
+    if (snap.exists()) {
+      const data =
+        snap.data().products || [];
+      const publishedProducts =
+        data.filter(
+          (item) =>
+            item.isPublished
         );
-
-        if (snap.exists()) {
-
-          const data = snap.data().products || [];
-
-          const publishedProducts = data.filter(
-            (item) => item.isPublished
-          );
-
-          setProducts(publishedProducts);
-        }
-
-      } catch (err) {
-
-        console.error(err);
-
-      } finally {
-
-        setLoading(false);
-
-      }
-
-    };
+      // SET PRODUCTS
+      setProducts(
+        publishedProducts
+      );
+      // SAVE CACHE
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify(
+          publishedProducts
+        )
+      );
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchProducts();
 
@@ -207,20 +232,14 @@ export default function ItemsPage(city,) {
       />
       {/* TOP HERO */}
       <section className="relative pt-32 pb-24 overflow-hidden">
-
         {/* Background */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-violet-100 blur-3xl rounded-full"></div>
-
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-sky-100 blur-3xl rounded-full"></div>
-
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
-
           <div className="text-center max-w-5xl mx-auto">
-
             <span className="inline-flex items-center rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
               Human Biosis Pvt Ltd
             </span>
-
             <motion.h1
               initial={{ opacity: 0, y: 35 }}
               animate={{ opacity: 1, y: 0 }}
@@ -231,21 +250,17 @@ export default function ItemsPage(city,) {
                 ? `${city} Laboratory & Hospital Equipment Solutions`
                 : "Laboratory & Hospital Equipment Solutions"}
             </motion.h1>
-
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
               Premium laboratory instruments, diagnostic systems,
               hospital machines, pathology devices,
               and healthcare technology solutions
               {city ? ` in ${city}` : ""}.
             </p>
-
           </div>
 
           {/* Search */}
           <div className="mt-14 max-w-2xl mx-auto">
-
             <div className="bg-white border border-slate-200 rounded-full shadow-xl px-6 py-5 flex items-center">
-
               <Search size={22} className="text-slate-400" />
 
               <input
@@ -380,7 +395,7 @@ export default function ItemsPage(city,) {
 
             {filteredProducts.map((item, index) => (
 
-              <motion.div
+              <div
                 key={item.id || index}
                 initial={{ opacity: 0, y: 35 }}
                 whileInView={{
@@ -447,7 +462,7 @@ export default function ItemsPage(city,) {
 
                 </div>
 
-              </motion.div>
+              </div>
 
             ))}
 
@@ -480,7 +495,7 @@ export default function ItemsPage(city,) {
 
             <button
               onClick={() =>
-                (window.location.href = "/contact")
+                router.push("/contact")
               }
               className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:scale-105 transition duration-300 whitespace-nowrap"
             >

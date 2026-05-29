@@ -21,11 +21,8 @@ export default function Navbar() {
 
   const [open, setOpen] =
     useState(false);
-
   const pathname =
     usePathname();
-
-  // DISTRICT DETECT
   const pathParts =
     pathname.split("/");
 
@@ -85,26 +82,26 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-slate-200/60">
-
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-6 lg:px-8 py-4">
-
+      <nav  aria-label="Main Navigation"
+        className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-6 lg:px-8 py-4"
+      >
         {/* Logo */}
-        <Link
-          href={`${basePath}/`}
-          className="text-2xl sm:text-3xl font-bold tracking-tight"
-        >
+       <Link
+        href={`${basePath}/`}
+        title="Human Biomedicals - Laboratory & Hospital Equipment Supplier"
+        aria-label="Human Biomedicals Home"
+        className="text-2xl sm:text-3xl font-bold tracking-tight"
+      >
 
           <span className="bg-gradient-to-r from-violet-600 to-sky-500 bg-clip-text text-transparent">
-            Human Biomedical
+            Human Biomedicals
           </span>
 
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-
           {navLinks.map((link) => (
-
             <Link
               key={link.name}
               href={link.href}
@@ -170,9 +167,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                aria-label={
-                  link.keyword
-                }
+                aria-label={`Go to ${link.name} page`}
                 onClick={() =>
                   setOpen(false)
                 }

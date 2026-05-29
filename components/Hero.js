@@ -10,9 +10,7 @@ import {
 } from "firebase/firestore";
 
 import { motion } from "framer-motion";
-
 import Link from "next/link";
-
 import Loader from "./Loader";
 
 export default function Hero({
@@ -23,8 +21,8 @@ export default function Hero({
   const [data, setData] =
     useState(null);
 
+    
   useEffect(() => {
-
     const fetchData =
       async () => {
 
@@ -61,7 +59,6 @@ export default function Hero({
       : "";
   return (
     <section className="relative overflow-hidden min-h-screen flex items-center">
-
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-violet-300/30 blur-3xl rounded-full"></div>
 
@@ -93,22 +90,25 @@ export default function Hero({
           </motion.div>
 
           {/* Heading */}
-          <motion.h1
-            initial={{
-              opacity: 0,
-              y: 35,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-            }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
-          >
-            {data?.title} in {city}
-          </motion.h1>
+     <motion.h1
+        initial={{
+          opacity: 0,
+          y: 35,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.8,
+        }}
+        className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
+      >
+        Biomedical Equipment Supplier in {city}
+        <span className="block text-violet-600">
+          Pathology & Hospital Equipment
+        </span>
+      </motion.h1>
 
           {/* SEO Content */}
           <motion.p
@@ -125,7 +125,8 @@ export default function Hero({
             }}
             className="mt-8 text-lg sm:text-xl text-slate-600 leading-9 max-w-2xl"
           >
-            {data?.description}
+            Leading biomedical equipment supplier in {city}, offering pathology lab equipment, hospital machines, diagnostic 
+            instruments, ICU equipment, OT setup, laboratory solutions, and medical devices with fast delivery and support.
 
             {" "}
 
@@ -222,10 +223,12 @@ export default function Hero({
         >
 
           <div className="glass rounded-[40px] p-5 shadow-2xl">
-
             <img
-              src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1200&auto=format&fit=crop"
-              alt={`Advanced laboratory and hospital equipment in ${city}`}
+              src="/images/biomedical-equipment.webp"
+              alt={`Biomedical laboratory and hospital equipment supplier in ${city}`}
+              loading="lazy"
+              width="1200"
+              height="800"
               className="w-full h-[350px] sm:h-[450px] lg:h-[600px] object-cover rounded-[30px]"
             />
 
