@@ -2,10 +2,6 @@
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter }
 from "next/navigation";
-
-const router =
-  useRouter();
-
 import {
   doc,
   getDoc,
@@ -20,9 +16,7 @@ import {
   ChevronRight,
   X,
 } from "lucide-react";
-
 import { useState, useEffect } from "react";
-
 import { db } from "@/firebase";
 
 const categories = [
@@ -33,12 +27,15 @@ const categories = [
   "Pathology",
 ];
 
-export default function ItemsPage(city,) {
+
+export default function ItemsPage({
+  city
+}) {
 
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] =
     useState("All");
-
+    
   const [selectedProduct, setSelectedProduct] =
     useState(null);
 
@@ -54,6 +51,9 @@ export default function ItemsPage(city,) {
     phone: "",
     message: "",
   });
+
+  const router =
+  useRouter();
 
   const [sending, setSending] = useState(false);
   // FETCH PRODUCTS FROM FIREBASE
@@ -131,7 +131,6 @@ export default function ItemsPage(city,) {
   };
 
   const handleSubmit = async () => {
-
     if (
       !formData.name ||
       !formData.email ||
@@ -213,12 +212,45 @@ export default function ItemsPage(city,) {
   const featuredProduct =
     products.length > 0 ? products[0] : null;
 
-  if (loading) return null;
+  // if (loading) return null;
+  if (loading)
+  return (
+    <div className="h-screen flex items-center justify-center text-2xl font-bold">
+      Loading Products...
+    </div>
+  );
 
   return (
 
     <main className="relative overflow-hidden bg-white">
 
+   <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context":
+            "https://schema.org",
+          "@type":
+            "MedicalEquipmentSupplier",
+          name:
+            "Human Biomedicals",
+          url:
+            "https://humanbiomedicals.org",
+          areaServed:
+            city,
+          description:
+            `Medical laboratory and hospital equipment in ${city}`,
+          address: {
+            "@type":
+              "PostalAddress",
+            addressLocality:
+              city,
+            addressCountry:
+              "India"
+          }
+        })
+      }}
+    />
       <Toaster
         position="top-right"
         toastOptions={{
@@ -238,7 +270,7 @@ export default function ItemsPage(city,) {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-5xl mx-auto">
             <span className="inline-flex items-center rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Human Biosis Pvt Ltd
+              Human Biomedicals
             </span>
             <motion.h1
               initial={{ opacity: 0, y: 35 }}
@@ -246,9 +278,9 @@ export default function ItemsPage(city,) {
               transition={{ duration: 0.7 }}
               className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-slate-900"
             >
-              {city
-                ? `${city} Laboratory & Hospital Equipment Solutions`
-                : "Laboratory & Hospital Equipment Solutions"}
+            {city
+            ? `Buy Medical Laboratory Equipment in ${city} | Hospital & Diagnostic Devices`
+            : "Medical Laboratory & Hospital Equipment in India"}
             </motion.h1>
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
               Premium laboratory instruments, diagnostic systems,
@@ -394,8 +426,7 @@ export default function ItemsPage(city,) {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
             {filteredProducts.map((item, index) => (
-
-              <div
+                <motion.div
                 key={item.id || index}
                 initial={{ opacity: 0, y: 35 }}
                 whileInView={{
@@ -412,36 +443,35 @@ export default function ItemsPage(city,) {
 
                 {/* Image */}
                 <div className="relative overflow-hidden">
-
                   <img
                     src={
                       item.image ||
                       "/placeholder.jpg"
                     }
-                    alt={item.title}
+                    alt={`${item.title} in ${city} | Human Biomedicals`}
                     className="w-full h-[260px] object-cover group-hover:scale-105 transition duration-700"
                   />
-
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-semibold text-slate-800">
                     {item.instrument || "Medical"}
                   </div>
-
                 </div>
 
                 {/* Content */}
                 <div className="p-6">
-
                   <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
-                    Human Biosis Pvt Ltd
+                    Human Biomedicals
                   </p>
-
                   <h3 className="mt-3 text-2xl font-bold leading-snug text-slate-900">
                     {item.title}
                   </h3>
-
+                  <p className="text-sm text-slate-500 mt-2">
+                  Buy {item.title} in {city},
+                  best laboratory and hospital
+                  equipment supplier in {city}.
+                </p>
+                
                   {/* Buttons */}
                   <div className="mt-7 flex items-center justify-between">
-
                     {/* ENQUIRY */}
                     <button
                       onClick={() => {
@@ -457,13 +487,9 @@ export default function ItemsPage(city,) {
                     <button className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-700 hover:text-violet-600 hover:border-violet-400 transition duration-300">
                       <ChevronRight size={20} />
                     </button>
-
                   </div>
-
                 </div>
-
-              </div>
-
+              </motion.div>
             ))}
 
           </div>
@@ -486,7 +512,7 @@ export default function ItemsPage(city,) {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Human Biosis Pvt Ltd for laboratory instruments,
+                Contact Human Biomedicals for laboratory instruments,
                 diagnostic systems, pathology devices,
                 and hospital equipment solutions.
               </p>
@@ -552,7 +578,7 @@ export default function ItemsPage(city,) {
 
               {/* Description */}
               <p className="mt-8 text-lg leading-8 text-slate-600">
-                Contact Human Biosis Pvt Ltd for premium laboratory
+                Contact Human Biomedicals for premium laboratory
                 instruments, pathology systems, diagnostic devices,
                 hospital equipment, and healthcare technology solutions.
               </p>
@@ -583,7 +609,7 @@ export default function ItemsPage(city,) {
                     </h3>
 
                     <div className="mt-3 inline-flex px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
-                      Human Biosis Pvt Ltd
+                      Human Biomedicals
                     </div>
 
                     <p className="mt-3 text-sm leading-6 text-slate-600 line-clamp-2">

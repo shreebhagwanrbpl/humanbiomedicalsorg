@@ -59,6 +59,34 @@ export default function Hero({
       : "";
   return (
     <section className="relative overflow-hidden min-h-screen flex items-center">
+
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context":
+        "https://schema.org",
+      "@type":
+        "MedicalEquipmentSupplier",
+      name:
+        "Human Biomedicals",
+      url:
+        "https://humanbiomedicals.org",
+      areaServed:
+        city,
+      description:
+        `Biomedical, pathology and hospital equipment supplier in ${city}`,
+      address: {
+        "@type":
+          "PostalAddress",
+        addressLocality:
+          city,
+        addressCountry:
+          "India"
+      }
+    })
+  }}
+/>
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-violet-300/30 blur-3xl rounded-full"></div>
 
@@ -104,10 +132,10 @@ export default function Hero({
         }}
         className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
       >
-        Biomedical Equipment Supplier in {city}
-        <span className="block text-violet-600">
-          Pathology & Hospital Equipment
-        </span>
+        Buy Biomedical Equipment in {city}
+      <span className="block text-violet-600">
+        Pathology, Laboratory & Hospital Equipment Supplier
+      </span>
       </motion.h1>
 
           {/* SEO Content */}
@@ -125,15 +153,21 @@ export default function Hero({
             }}
             className="mt-8 text-lg sm:text-xl text-slate-600 leading-9 max-w-2xl"
           >
-            Leading biomedical equipment supplier in {city}, offering pathology lab equipment, hospital machines, diagnostic 
-            instruments, ICU equipment, OT setup, laboratory solutions, and medical devices with fast delivery and support.
+            Leading biomedical equipment supplier in {city},
+            offering pathology lab equipment,
+            hospital machines,
+            diagnostic instruments,
+            ICU equipment,
+            OT setup,
+            laboratory solutions,
+            and medical devices.
+
 
             {" "}
 
-            Trusted biomedical,
-            pathology, laboratory,
-            and hospital equipment
-            supplier in {city}.
+            Trusted pathology,
+            laboratory and hospital
+            equipment supplier in {city}.
           </motion.p>
 
           {/* Buttons */}
