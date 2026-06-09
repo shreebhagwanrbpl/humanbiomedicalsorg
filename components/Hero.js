@@ -67,32 +67,32 @@ export default function Hero({
     <section className="relative overflow-hidden min-h-screen flex items-center">
 
       <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context":
-        "https://schema.org",
-      "@type":
-        "MedicalEquipmentSupplier",
-      name:
-        "Human Biomedicals",
-      url:
-        "https://humanbiomedicals.org",
-      areaServed:
-        city,
-      description:
-        `Biomedical, pathology and hospital equipment supplier in ${city}`,
-      address: {
-        "@type":
-          "PostalAddress",
-        addressLocality:
-          city,
-        addressCountry:
-          "India"
-      }
-    })
-  }}
-/>
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context":
+              "https://schema.org",
+            "@type":
+              "MedicalEquipmentSupplier",
+            name:
+              "Human Biomedicals",
+            url:
+              "https://humanbiomedicals.org",
+            areaServed:
+              city,
+            description:
+              `Biomedical, pathology and hospital equipment supplier in ${city}`,
+            address: {
+              "@type":
+                "PostalAddress",
+              addressLocality:
+                city,
+              addressCountry:
+                "India"
+            }
+          })
+        }}
+      />
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-violet-300/30 blur-3xl rounded-full"></div>
 
@@ -123,7 +123,7 @@ export default function Hero({
           </motion.div>
 
           {/* Heading */}
-<<<<<<< HEAD
+
           <motion.h1
             initial={{
               opacity: 0,
@@ -143,27 +143,27 @@ export default function Hero({
               city || "India"
             )}
           </motion.h1>
-=======
-     <motion.h1
-        initial={{
-          opacity: 0,
-          y: 35,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.8,
-        }}
-        className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
-      >
-        Buy Biomedical Equipment in {city}
-      <span className="block text-violet-600">
-        Pathology, Laboratory & Hospital Equipment Supplier
-      </span>
-      </motion.h1>
->>>>>>> b0e26621ec997ee8adf3ecdbc4d4f9ea39f9a135
+
+          <motion.h1
+            initial={{
+              opacity: 0,
+              y: 35,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.8,
+            }}
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
+          >
+            Buy Biomedical Equipment in {city}
+            <span className="block text-violet-600">
+              Pathology, Laboratory & Hospital Equipment Supplier
+            </span>
+          </motion.h1>
+
 
           {/* SEO Content */}
           <motion.p
@@ -180,12 +180,12 @@ export default function Hero({
             }}
             className="mt-8 text-lg sm:text-xl text-slate-600 leading-9 max-w-2xl"
           >
-<<<<<<< HEAD
+
             {data?.description?.replaceAll(
               "{city}",
               city || "India"
             )}
-=======
+
             Leading biomedical equipment supplier in {city},
             offering pathology lab equipment,
             hospital machines,
@@ -201,7 +201,6 @@ export default function Hero({
             Trusted pathology,
             laboratory and hospital
             equipment supplier in {city}.
->>>>>>> b0e26621ec997ee8adf3ecdbc4d4f9ea39f9a135
           </motion.p>
 
           {/* Buttons */}

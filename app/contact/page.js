@@ -110,12 +110,16 @@ export default function ContactPage({
       : originalAddress;
   // HANDLE INPUT
   const handleChange = (e) => {
+    let { name, value } = e.target;
+
+    if (name === "phone") {
+      value = value.replace(/\D/g, "").slice(0, 10);
+    }
 
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-
   };
 
   // HANDLE SUBMIT
@@ -124,12 +128,62 @@ export default function ContactPage({
     e.preventDefault();
 
     // VALIDATION
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.message
-    ) {
+    // VALIDATION
+    if (!formData.name.trim()) {
+      toast.error("Please enter your name");
+      return;
+    }
+
+    if (formData.name.trim().length < 3) {
+      toast.error("Name must be at least 3 characters");
+      return;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.email.trim()) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    const phoneRegex =
+      /^[6-9]\d{9}$/;
+
+    if (!formData.phone.trim()) {
+      toast.error("Please enter your phone number");
+      return;
+    }
+
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Enter a valid 10 digit mobile number");
+      return;
+    }
+
+    if (!formData.subject.trim()) {
+      toast.error("Please enter product requirement");
+      return;
+    }
+
+    if (formData.subject.trim().length < 3) {
+      toast.error("Product requirement is too short");
+      return;
+    }
+
+    if (!formData.message.trim()) {
+      toast.error("Please enter your enquiry");
+      return;
+    }
+
+    if (formData.message.trim().length < 10) {
+      toast.error("Enquiry must be at least 10 characters");
+      return;
+    } {
 
       toast.error("Please fill all required fields");
 
@@ -207,7 +261,7 @@ export default function ContactPage({
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Contact Human Biomedical LLP
+              Contact Human Biomedicals LLP
             </span>
 
             <motion.h1
@@ -220,7 +274,7 @@ export default function ContactPage({
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Contact Human Biomedical LLP for premium laboratory
+              Contact Human Biomedicals LLP for premium laboratory
               instruments, diagnostic systems,
               pathology equipment, and hospital technology solutions.
             </p>
@@ -236,7 +290,7 @@ export default function ContactPage({
 
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
-          <div className="grid lg:grid-cols-2 gap-14 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
 
             {/* LEFT */}
             <motion.div
@@ -278,7 +332,7 @@ export default function ContactPage({
                       Email Address
                     </p>
 
-                    <h3 className="mt-2 text-xl font-bold text-slate-900">
+                    <h3 className="mt-2 text-base sm:text-lg lg:text-xl font-bold text-slate-900 break-words">
                       {getValue("Email", "Email Address")}
                     </h3>
                   </div>
@@ -372,7 +426,7 @@ export default function ContactPage({
               }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="rounded-[40px] border border-slate-200 bg-white p-8 lg:p-10 shadow-2xl"
+              className="rounded-[30px] lg:rounded-[40px] border border-slate-200 bg-white p-5 sm:p-6 lg:p-10 shadow-2xl"
             >
 
               <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
@@ -403,15 +457,20 @@ export default function ContactPage({
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Full Name"
+                    maxLength={50}
+                    required
                     className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 outline-none focus:border-violet-500"
                   />
 
                   <input
-                    type="text"
+                    type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone Number"
+                    maxLength={10}
+                    pattern="[6-9]{1}[0-9]{9}"
+                    required
                     className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 outline-none focus:border-violet-500"
                   />
 
@@ -423,6 +482,7 @@ export default function ContactPage({
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email Address"
+                  required
                   className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 outline-none focus:border-violet-500"
                 />
 
@@ -432,6 +492,8 @@ export default function ContactPage({
                   value={formData.subject}
                   onChange={handleChange}
                   placeholder="Product Requirement"
+                  maxLength={100}
+                  required
                   className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 outline-none focus:border-violet-500"
                 />
 
@@ -441,8 +503,11 @@ export default function ContactPage({
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Write your enquiry..."
+                  minLength={10}
+                  maxLength={1000}
+                  required
                   className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 outline-none focus:border-violet-500"
-                ></textarea>
+                />
 
                 {/* Button */}
                 <button

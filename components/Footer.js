@@ -144,7 +144,7 @@ export default function Footer() {
           <div>
 
             <h2 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-sky-500 bg-clip-text text-transparent">
-              {getValue("Company", "Company Name") || "Human Biomedical LLP"}
+              {getValue("Company", "Company Name") || "Human Biomedicals LLP"}
             </h2>
 
             <p className="mt-6 text-slate-600 leading-8">
@@ -316,7 +316,7 @@ export default function Footer() {
         <div className="mt-16 py-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-5">
 
           <p className="text-slate-500 text-sm text-center md:text-left">
-            © 2026 {getValue("Company", "Company Name") || "Human Biomedical LLP"}.
+            © 2026 {getValue("Company", "Company Name") || "Human Biomedicals LLP"}.
             All rights reserved.
           </p>
 

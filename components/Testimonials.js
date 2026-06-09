@@ -8,7 +8,7 @@ const testimonials = [
     name: "Amit Sharma",
     role: "Pathology Lab Owner",
     review:
-      "Human Biomedical LLP provided high-quality laboratory equipment with excellent technical support and fast delivery service.",
+      "Human Biomedicals LLP provided high-quality laboratory equipment with excellent technical support and fast delivery service.",
   },
   {
     name: "Dr. Neha Verma",
@@ -52,7 +52,7 @@ export default function Testimonials() {
 
           <p className="mt-6 text-lg text-slate-600 leading-8">
             Hospitals, laboratories, and healthcare institutions trust
-            Human Biomedical LLP for premium medical equipment and reliable support.
+            Human Biomedicals LLP for premium medical equipment and reliable support.
           </p>
         </motion.div>
 

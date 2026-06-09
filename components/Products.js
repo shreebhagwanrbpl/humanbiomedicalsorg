@@ -104,7 +104,7 @@ export default function Products({ city,
 
           <p className="mt-6 text-lg text-slate-600 leading-8">
             Explore advanced healthcare equipment, laboratory instruments,
-            hospital devices, and diagnostic systems by Human Biomedical LLP.
+            hospital devices, and diagnostic systems by Human Biomedicals LLP.
           </p>
 
         </div>

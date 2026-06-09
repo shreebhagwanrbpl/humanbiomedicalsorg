@@ -100,7 +100,7 @@ export default function ServicesPage({ city },) {
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Human Biomedical LLP Services
+              Human Biomedicals LLP Services
             </span>
 
             <motion.h1
@@ -115,7 +115,7 @@ export default function ServicesPage({ city },) {
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Human Biomedical LLP provides premium laboratory
+              Human Biomedicals LLP provides premium laboratory
               equipment solutions, hospital machinery,
               diagnostic systems, healthcare technology,
               installation support, and medical infrastructure services
@@ -290,7 +290,7 @@ export default function ServicesPage({ city },) {
               </h2>
 
               <p className="mt-8 text-lg leading-9 text-slate-600">
-                Human Biomedical LLP delivers premium healthcare
+                Human Biomedicals LLP delivers premium healthcare
                 technology solutions with quality assurance,
                 reliable support, fast delivery,
                 and advanced laboratory equipment expertise.
@@ -355,7 +355,7 @@ export default function ServicesPage({ city },) {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Human Biomedical LLP for premium laboratory
+                Contact Human Biomedicals LLP for premium laboratory
                 instruments, hospital equipment,
                 pathology systems, and diagnostic devices.
               </p>

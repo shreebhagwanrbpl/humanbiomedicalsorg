@@ -25,15 +25,15 @@ export const metadata = {
 
   title: {
     default:
-      "Human Biomedical LLP | Biomedical, Laboratory & Hospital Equipment Supplier India",
-    template: "%s | Human Biomedical LLP",
+      "Human Biomedicals LLP | Biomedicals, Laboratory & Hospital Equipment Supplier India",
+    template: "%s | Human Biomedicals LLP",
   },
 
   description:
-    "Human Biomedical LLP is a trusted supplier of biomedical, laboratory, pathology, diagnostic, and hospital equipment in India. We provide premium medical devices, ICU equipment, OT setup, pathology machines, and healthcare technology solutions.",
+    "Human Biomedical LLP is a trusted supplier of biomedicals, laboratory, pathology, diagnostic, and hospital equipment in India. We provide premium medical devices, ICU equipment, OT setup, pathology machines, and healthcare technology solutions.",
 
   keywords: [
-    "biomedical equipment supplier",
+    "biomedicals equipment supplier",
     "laboratory equipment supplier India",
     "hospital equipment supplier",
     "pathology lab equipment",
@@ -46,17 +46,17 @@ export const metadata = {
     "OT equipment supplier",
     "pathology machines India",
     "medical equipment supplier India",
-    "Human Biomedical LLP",
+    "Human Biomedicals LLP",
   ],
 
   authors: [
     {
-      name: "Human Biomedical LLP",
+      name: "Human Biomedicals LLP",
     },
   ],
 
-  creator: "Human Biomedical LLP",
-  publisher: "Human Biomedical LLP",
+  creator: "Human Biomedicals LLP",
+  publisher: "Human Biomedicals LLP",
 
   robots: {
     index: true,
@@ -77,11 +77,11 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Human Biomedical LLP | Biomedical & Hospital Equipment Supplier",
+      "Human Biomedicals LLP | Biomedicals & Hospital Equipment Supplier",
     description:
-      "Premium biomedical, laboratory, pathology, diagnostic, and hospital equipment supplier across India.",
+      "Premium biomedicals, laboratory, pathology, diagnostic, and hospital equipment supplier across India.",
     url: "https://humanbiomedicals.org",
-    siteName: "Human Biomedical LLP",
+    siteName: "Human Biomedicals LLP",
     locale: "en_IN",
     type: "website",
     images: [
@@ -89,7 +89,7 @@ export const metadata = {
         url: "/og-image.jpg", // public folder me image daalna
         width: 1200,
         height: 630,
-        alt: "Human Biomedical LLP",
+        alt: "Human Biomedicals LLP",
       },
     ],
   },
@@ -97,9 +97,9 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Human Biomedical LLP | Biomedical Equipment Supplier",
+      "Human Biomedicals LLP | Biomedicals Equipment Supplier",
     description:
-      "Trusted supplier of biomedical, pathology, diagnostic, laboratory and hospital equipment.",
+      "Trusted supplier of biomedicals, pathology, diagnostic, laboratory and hospital equipment.",
     images: ["/og-image.jpg"],
   },
 

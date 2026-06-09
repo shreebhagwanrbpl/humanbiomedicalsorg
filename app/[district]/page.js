@@ -8,8 +8,8 @@ export async function generateMetadata({
   const resolvedParams =
     await params;
 
-const district =
-  resolvedParams?.district || "";
+  const district =
+    resolvedParams?.district || "";
 
   const city = district
     .replace(/-/g, " ")
