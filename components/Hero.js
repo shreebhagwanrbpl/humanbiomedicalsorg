@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { usePathname } from "next/navigation";
 import { db } from "@/firebase";
 
 import {
@@ -21,7 +21,17 @@ export default function Hero({
   const [data, setData] =
     useState(null);
 
-    
+  const pathname = usePathname();
+
+  const pathParts = pathname.split("/");
+
+  const slug = pathParts[1];
+
+  const basePath =
+    slug &&
+      !["about", "items", "services", "contact"].includes(slug)
+      ? `/${slug}`
+      : "";
   useEffect(() => {
     const fetchData =
       async () => {
@@ -53,10 +63,6 @@ export default function Hero({
 
   if (!data)
     return <Loader />;
-  const basePath =
-    district
-      ? `/${district}`
-      : "";
   return (
     <section className="relative overflow-hidden min-h-screen flex items-center">
       {/* Background Effects */}
@@ -84,31 +90,30 @@ export default function Hero({
             }}
             className="inline-flex items-center glass px-5 py-2 rounded-full text-sm font-medium text-slate-700 mb-8"
           >
-            Trusted Laboratory &
-            Hospital Equipment
-            Supplier in {city}
+            Trusted Laboratory & Hospital Equipment Supplier in{" "}
+            {city || "India"}
           </motion.div>
 
           {/* Heading */}
-     <motion.h1
-        initial={{
-          opacity: 0,
-          y: 35,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.8,
-        }}
-        className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
-      >
-        Biomedical Equipment Supplier in {city}
-        <span className="block text-violet-600">
-          Pathology & Hospital Equipment
-        </span>
-      </motion.h1>
+          <motion.h1
+            initial={{
+              opacity: 0,
+              y: 35,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.8,
+            }}
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900"
+          >
+            {data?.title?.replaceAll(
+              "{city}",
+              city || "India"
+            )}
+          </motion.h1>
 
           {/* SEO Content */}
           <motion.p
@@ -125,15 +130,10 @@ export default function Hero({
             }}
             className="mt-8 text-lg sm:text-xl text-slate-600 leading-9 max-w-2xl"
           >
-            Leading biomedical equipment supplier in {city}, offering pathology lab equipment, hospital machines, diagnostic 
-            instruments, ICU equipment, OT setup, laboratory solutions, and medical devices with fast delivery and support.
-
-            {" "}
-
-            Trusted biomedical,
-            pathology, laboratory,
-            and hospital equipment
-            supplier in {city}.
+            {data?.description?.replaceAll(
+              "{city}",
+              city || "India"
+            )}
           </motion.p>
 
           {/* Buttons */}
@@ -152,15 +152,13 @@ export default function Hero({
             className="mt-12 flex flex-col sm:flex-row gap-5"
           >
 
-            <Link
-              href={`${basePath}/items`}
+            <Link href={`${basePath}/items`}
               className="bg-gradient-to-r from-violet-600 to-sky-500 text-white px-8 py-4 rounded-full font-semibold text-center shadow-xl hover:scale-105 transition duration-300"
             >
               {data?.button1Text}
             </Link>
 
-            <Link
-              href={`${basePath}/contact`}
+            <Link href={`${basePath}/contact`}
               className="glass border border-slate-200 px-8 py-4 rounded-full font-semibold text-slate-800 text-center hover:border-violet-400 transition duration-300"
             >
               {data?.button2Text}
@@ -177,8 +175,7 @@ export default function Hero({
               </h3>
 
               <p className="text-slate-600 mt-2">
-                Medical Equipment
-                Deliveries
+                Medical Equipment Deliveries
               </p>
             </div>
 
@@ -224,7 +221,7 @@ export default function Hero({
 
           <div className="glass rounded-[40px] p-5 shadow-2xl">
             <img
-              src="/images/biomedical-equipment.webp"
+              src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1200&q=80"
               alt={`Biomedical laboratory and hospital equipment supplier in ${city}`}
               loading="lazy"
               width="1200"

@@ -81,7 +81,7 @@ export default function Features() {
         >
 
           <span className="glass px-5 py-2 rounded-full text-sm font-medium text-slate-700 inline-block">
-            Human Biosis Pvt Ltd
+            Human Biomedical LLP
           </span>
 
           <h2 className="mt-8 text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">

@@ -1,10 +1,8 @@
 "use client";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter }
-from "next/navigation";
+  from "next/navigation";
 
-const router =
-  useRouter();
 
 import {
   doc,
@@ -33,8 +31,10 @@ const categories = [
   "Pathology",
 ];
 
-export default function ItemsPage(city,) {
+export default function ItemsPage({ city, }) {
 
+  const router =
+    useRouter();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] =
     useState("All");
@@ -54,68 +54,75 @@ export default function ItemsPage(city,) {
     phone: "",
     message: "",
   });
-
+  const basePath = city
+    ? `/${city.toLowerCase().replace(/\s+/g, "-")}`
+    : "";
   const [sending, setSending] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const productsPerPage = 10;
+  const [visible, setVisible] = useState(8);
+
   // FETCH PRODUCTS FROM FIREBASE
   useEffect(() => {
 
-  const fetchProducts = async () => {
+    const fetchProducts = async () => {
 
-  try {
+      try {
 
-    // CACHE CHECK
-    const cacheKey =
-      "products_cache";
+        // CACHE CHECK
+        const cacheKey =
+          "products_cache";
 
-    const cached =
-      localStorage.getItem(
-        cacheKey
-      );
+        const cached =
+          localStorage.getItem(
+            cacheKey
+          );
 
-    if (cached) {
+        if (cached) {
 
-      setProducts(
-        JSON.parse(cached)
-      );
-      setLoading(false);
-      return;
-    }
-    // FIREBASE CALL
-    const snap = await getDoc(
-      doc(
-        db,
-        "websites",
-        "humanbiomedicalsorg",
-        "pages",
-        "products"
-      )
-    );
-    if (snap.exists()) {
-      const data =
-        snap.data().products || [];
-      const publishedProducts =
-        data.filter(
-          (item) =>
-            item.isPublished
+          setProducts(
+            JSON.parse(cached)
+          );
+          setLoading(false);
+          return;
+        }
+        // FIREBASE CALL
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "humanbiomedicalsorg",
+            "pages",
+            "products"
+          )
         );
-      // SET PRODUCTS
-      setProducts(
-        publishedProducts
-      );
-      // SAVE CACHE
-      localStorage.setItem(
-        cacheKey,
-        JSON.stringify(
-          publishedProducts
-        )
-      );
-    }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-};
+        if (snap.exists()) {
+          const data =
+            snap.data().products || [];
+          const publishedProducts =
+            data.filter(
+              (item) =>
+                item.isPublished
+            );
+          // SET PRODUCTS
+          setProducts(
+            publishedProducts
+          );
+          // SAVE CACHE
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify(
+              publishedProducts
+            )
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchProducts();
 
@@ -208,11 +215,20 @@ export default function ItemsPage(city,) {
     return matchSearch && matchCategory;
 
   });
-
+  const visibleProducts =
+    filteredProducts.slice(0, visible);
   // FEATURED PRODUCT
   const featuredProduct =
     products.length > 0 ? products[0] : null;
+  const totalPages = Math.ceil(
+    filteredProducts.length / productsPerPage
+  );
 
+  const startIndex =
+    (currentPage - 1) * productsPerPage;
+  useEffect(() => {
+    setVisible(8);
+  }, [search, activeCategory]);
   if (loading) return null;
 
   return (
@@ -238,7 +254,7 @@ export default function ItemsPage(city,) {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-5xl mx-auto">
             <span className="inline-flex items-center rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Human Biosis Pvt Ltd
+              Human Biomedical LLP
             </span>
             <motion.h1
               initial={{ opacity: 0, y: 35 }}
@@ -354,11 +370,11 @@ export default function ItemsPage(city,) {
                   </button>
 
                   {/* View Details */}
-                  <button
+                  {/* <button
                     className="border border-slate-300 bg-white px-8 py-4 rounded-full font-semibold text-slate-700 hover:border-violet-500 hover:text-violet-600 transition"
                   >
                     View Details
-                  </button>
+                  </button> */}
 
                 </div>
 
@@ -393,9 +409,9 @@ export default function ItemsPage(city,) {
           {/* PRODUCTS GRID */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-            {filteredProducts.map((item, index) => (
+            {visibleProducts.map((item, index) => (
 
-              <div
+              <motion.div
                 key={item.id || index}
                 initial={{ opacity: 0, y: 35 }}
                 whileInView={{
@@ -432,12 +448,18 @@ export default function ItemsPage(city,) {
                 <div className="p-6">
 
                   <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
-                    Human Biosis Pvt Ltd
+                    Human Biomedical LLP
                   </p>
 
-                  <h3 className="mt-3 text-2xl font-bold leading-snug text-slate-900">
-                    {item.title}
-                  </h3>
+                  <p >
+                    Product: {item.title}
+                  </p>
+                  <p>
+                    Brand:  {item.brand}
+                  </p>
+                  <p>
+                    Throughput:  {item.throughput}
+                  </p>
 
                   {/* Buttons */}
                   <div className="mt-7 flex items-center justify-between">
@@ -462,12 +484,19 @@ export default function ItemsPage(city,) {
 
                 </div>
 
-              </div>
+              </motion.div>
 
             ))}
 
           </div>
-
+          {visible < filteredProducts.length && (
+            <button
+              onClick={() => setVisible(prev => prev + 8)}
+              className="mt-10 px-8 py-3 bg-violet-600 text-white rounded-full"
+            >
+              Load More
+            </button>
+          )}
         </div>
 
       </section>
@@ -486,7 +515,7 @@ export default function ItemsPage(city,) {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Human Biosis Pvt Ltd for laboratory instruments,
+                Contact Human Biomedical LLP for laboratory instruments,
                 diagnostic systems, pathology devices,
                 and hospital equipment solutions.
               </p>
@@ -495,7 +524,7 @@ export default function ItemsPage(city,) {
 
             <button
               onClick={() =>
-                router.push("/contact")
+                router.push(`${basePath}/contact`)
               }
               className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:scale-105 transition duration-300 whitespace-nowrap"
             >
@@ -552,7 +581,7 @@ export default function ItemsPage(city,) {
 
               {/* Description */}
               <p className="mt-8 text-lg leading-8 text-slate-600">
-                Contact Human Biosis Pvt Ltd for premium laboratory
+                Contact Human Biomedical LLP for premium laboratory
                 instruments, pathology systems, diagnostic devices,
                 hospital equipment, and healthcare technology solutions.
               </p>
@@ -583,7 +612,7 @@ export default function ItemsPage(city,) {
                     </h3>
 
                     <div className="mt-3 inline-flex px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
-                      Human Biosis Pvt Ltd
+                      Human Biomedical LLP
                     </div>
 
                     <p className="mt-3 text-sm leading-6 text-slate-600 line-clamp-2">

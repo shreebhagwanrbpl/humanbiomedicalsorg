@@ -1,5 +1,5 @@
 "use client";
-
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -12,13 +12,24 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-export default function Products() {
+export default function Products({ city,
+  district, }) {
 
   const [products, setProducts] = useState([]);
 
   const [loading, setLoading] =
     useState(true);
+  const pathname = usePathname();
 
+  const pathParts = pathname.split("/");
+
+  const slug = pathParts[1];
+
+  const basePath =
+    slug &&
+      !["about", "items", "services", "contact"].includes(slug)
+      ? `/${slug}`
+      : "";
   // FETCH PRODUCTS
   useEffect(() => {
 
@@ -93,7 +104,7 @@ export default function Products() {
 
           <p className="mt-6 text-lg text-slate-600 leading-8">
             Explore advanced healthcare equipment, laboratory instruments,
-            hospital devices, and diagnostic systems by Human Biosis Pvt Ltd.
+            hospital devices, and diagnostic systems by Human Biomedical LLP.
           </p>
 
         </div>
@@ -147,8 +158,7 @@ export default function Products() {
                 </p>
 
                 {/* Button */}
-                <Link
-                  href="/items"
+                <Link href={`${basePath}/items`}
                   className="mt-6 inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-sky-500 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transition duration-300"
                 >
                   View Product

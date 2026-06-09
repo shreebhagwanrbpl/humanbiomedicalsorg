@@ -29,7 +29,7 @@ export default function AboutPage({
           <div className="text-center max-w-4xl mx-auto">
 
             <span className="glass px-5 py-2 rounded-full text-sm font-medium text-slate-700 inline-block">
-              About Human Biosis Pvt Ltd
+              About Human Biomedical LLP
               {city && ` in ${city}`}
             </span>
 
@@ -39,7 +39,7 @@ export default function AboutPage({
             </h1>
 
             <p className="mt-8 text-lg sm:text-xl text-slate-600 leading-9">
-              Human Biosis Pvt Ltd is a trusted healthcare equipment company
+              Human Biomedical LLP is a trusted healthcare equipment company
               specializing in premium laboratory instruments, hospital
               machines, diagnostic systems, pathology equipment,
               healthcare devices, and advanced medical technology solutions
@@ -147,7 +147,7 @@ export default function AboutPage({
               </h2>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
-                Human Biosis Pvt Ltd focuses on delivering premium laboratory
+                Human Biomedical LLP focuses on delivering premium laboratory
                 instruments, hospital machines, diagnostic systems,
                 pathology equipment, and healthcare technology solutions
                 designed for modern healthcare institutions
@@ -184,7 +184,7 @@ export default function AboutPage({
               </p>
 
               <p className="mt-6 text-slate-600 leading-9 text-lg">
-                Human Biosis Pvt Ltd continuously works towards innovation,
+                Human Biomedical LLP continuously works towards innovation,
                 customer satisfaction, and long-term healthcare partnerships
                 across hospitals, pathology labs, and medical institutions
                 {city && ` in ${city}`}.
@@ -217,7 +217,7 @@ export default function AboutPage({
             </h2>
 
             <p className="mt-8 text-lg sm:text-xl text-slate-600 leading-9">
-              Human Biosis Pvt Ltd delivers reliable healthcare equipment
+              Human Biomedical LLP delivers reliable healthcare equipment
               solutions for hospitals, laboratories, research centers,
               clinics, and healthcare institutions
               {city && ` across ${city}`}.
@@ -324,7 +324,7 @@ export default function AboutPage({
               </h4>
 
               <p className="mt-5 text-slate-600 leading-8">
-                Human Biosis Pvt Ltd started with a vision to provide
+                Human Biomedical LLP started with a vision to provide
                 premium laboratory and hospital equipment solutions
                 {city && ` in ${city}`}.
               </p>

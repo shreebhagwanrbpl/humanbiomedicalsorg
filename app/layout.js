@@ -25,12 +25,12 @@ export const metadata = {
 
   title: {
     default:
-      "Human Biosis Pvt Ltd | Biomedical, Laboratory & Hospital Equipment Supplier India",
-    template: "%s | Human Biosis Pvt Ltd",
+      "Human Biomedical LLP | Biomedical, Laboratory & Hospital Equipment Supplier India",
+    template: "%s | Human Biomedical LLP",
   },
 
   description:
-    "Human Biosis Pvt Ltd is a trusted supplier of biomedical, laboratory, pathology, diagnostic, and hospital equipment in India. We provide premium medical devices, ICU equipment, OT setup, pathology machines, and healthcare technology solutions.",
+    "Human Biomedical LLP is a trusted supplier of biomedical, laboratory, pathology, diagnostic, and hospital equipment in India. We provide premium medical devices, ICU equipment, OT setup, pathology machines, and healthcare technology solutions.",
 
   keywords: [
     "biomedical equipment supplier",
@@ -46,17 +46,17 @@ export const metadata = {
     "OT equipment supplier",
     "pathology machines India",
     "medical equipment supplier India",
-    "Human Biosis Pvt Ltd",
+    "Human Biomedical LLP",
   ],
 
   authors: [
     {
-      name: "Human Biosis Pvt Ltd",
+      name: "Human Biomedical LLP",
     },
   ],
 
-  creator: "Human Biosis Pvt Ltd",
-  publisher: "Human Biosis Pvt Ltd",
+  creator: "Human Biomedical LLP",
+  publisher: "Human Biomedical LLP",
 
   robots: {
     index: true,
@@ -77,11 +77,11 @@ export const metadata = {
 
   openGraph: {
     title:
-      "Human Biosis Pvt Ltd | Biomedical & Hospital Equipment Supplier",
+      "Human Biomedical LLP | Biomedical & Hospital Equipment Supplier",
     description:
       "Premium biomedical, laboratory, pathology, diagnostic, and hospital equipment supplier across India.",
     url: "https://humanbiomedicals.org",
-    siteName: "Human Biosis Pvt Ltd",
+    siteName: "Human Biomedical LLP",
     locale: "en_IN",
     type: "website",
     images: [
@@ -89,7 +89,7 @@ export const metadata = {
         url: "/og-image.jpg", // public folder me image daalna
         width: 1200,
         height: 630,
-        alt: "Human Biosis Pvt Ltd",
+        alt: "Human Biomedical LLP",
       },
     ],
   },
@@ -97,7 +97,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Human Biosis Pvt Ltd | Biomedical Equipment Supplier",
+      "Human Biomedical LLP | Biomedical Equipment Supplier",
     description:
       "Trusted supplier of biomedical, pathology, diagnostic, laboratory and hospital equipment.",
     images: ["/og-image.jpg"],

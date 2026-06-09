@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 import {
   Menu,
@@ -82,21 +83,23 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-slate-200/60">
-      <nav  aria-label="Main Navigation"
+      <nav aria-label="Main Navigation"
         className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-6 lg:px-8 py-4"
       >
         {/* Logo */}
-       <Link
-        href={`${basePath}/`}
-        title="Human Biomedicals - Laboratory & Hospital Equipment Supplier"
-        aria-label="Human Biomedicals Home"
-        className="text-2xl sm:text-3xl font-bold tracking-tight"
-      >
-
-          <span className="bg-gradient-to-r from-violet-600 to-sky-500 bg-clip-text text-transparent">
-            Human Biomedicals
-          </span>
-
+        <Link
+          href={`${basePath}/`}
+          title="Human Biomedicals - Laboratory & Hospital Equipment Supplier"
+          aria-label="Human Biomedicals Home"
+        >
+          <Image
+            src="/logo.png"
+            alt="Human Biomedicals Logo"
+            width={220}
+            height={70}
+            priority
+            className="h-14 w-auto"
+          />
         </Link>
 
         {/* Desktop Menu */}

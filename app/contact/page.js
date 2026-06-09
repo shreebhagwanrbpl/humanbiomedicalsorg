@@ -207,7 +207,7 @@ export default function ContactPage({
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Contact Human Biosis Pvt Ltd
+              Contact Human Biomedical LLP
             </span>
 
             <motion.h1
@@ -220,7 +220,7 @@ export default function ContactPage({
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Contact Human Biosis Pvt Ltd for premium laboratory
+              Contact Human Biomedical LLP for premium laboratory
               instruments, diagnostic systems,
               pathology equipment, and hospital technology solutions.
             </p>

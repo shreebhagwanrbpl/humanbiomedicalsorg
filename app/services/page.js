@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
+import { useRouter } from "next/navigation";
 import {
   Microscope,
   Hospital,
@@ -37,10 +37,16 @@ const process = [
   "Technical Support",
 ];
 
-export default function ServicesPage(city,) {
+export default function ServicesPage({ city },) {
 
   const [services, setServices] = useState([]);
 
+
+  const router = useRouter();
+
+  const basePath = city
+    ? `/${city.toLowerCase().replace(/\s+/g, "-")}`
+    : "";
   // FETCH SERVICES
   useEffect(() => {
 
@@ -94,7 +100,7 @@ export default function ServicesPage(city,) {
           <div className="text-center max-w-5xl mx-auto">
 
             <span className="inline-flex rounded-full bg-violet-100 px-5 py-2 text-sm font-semibold text-violet-700">
-              Human Biosis Pvt Ltd Services
+              Human Biomedical LLP Services
             </span>
 
             <motion.h1
@@ -109,7 +115,7 @@ export default function ServicesPage(city,) {
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
-              Human Biosis Pvt Ltd provides premium laboratory
+              Human Biomedical LLP provides premium laboratory
               equipment solutions, hospital machinery,
               diagnostic systems, healthcare technology,
               installation support, and medical infrastructure services
@@ -284,7 +290,7 @@ export default function ServicesPage(city,) {
               </h2>
 
               <p className="mt-8 text-lg leading-9 text-slate-600">
-                Human Biosis Pvt Ltd delivers premium healthcare
+                Human Biomedical LLP delivers premium healthcare
                 technology solutions with quality assurance,
                 reliable support, fast delivery,
                 and advanced laboratory equipment expertise.
@@ -349,7 +355,7 @@ export default function ServicesPage(city,) {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Human Biosis Pvt Ltd for premium laboratory
+                Contact Human Biomedical LLP for premium laboratory
                 instruments, hospital equipment,
                 pathology systems, and diagnostic devices.
               </p>
@@ -358,7 +364,7 @@ export default function ServicesPage(city,) {
 
             <button
               onClick={() =>
-                (window.location.href = "/contact")
+                router.push(`${basePath}/contact`)
               }
               className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:scale-105 transition duration-300 whitespace-nowrap"
             >
