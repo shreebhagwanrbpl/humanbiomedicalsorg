@@ -4,14 +4,13 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-export const dynamic =
-  "force-dynamic";
-
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function sitemap() {
   const baseUrl =
     "https://humanbiomedicals.org";
+
   try {
     const snapshot =
       await getDocs(
@@ -23,21 +22,65 @@ export default async function sitemap() {
         )
       );
 
-    console.log(
-      "Total Districts:",
-      snapshot.size
-    );
-
     const districtUrls =
-      snapshot.docs.map((doc) => ({
-        url:
-          `${baseUrl}/${doc.id}`,
-        lastModified:
-          new Date(),
-        changeFrequency:
-          "daily",
-        priority: 0.9,
-      }));
+      snapshot.docs.flatMap(
+        (doc) => {
+          const district =
+            doc.id;
+
+          return [
+            // Main district page
+            {
+              url: `${baseUrl}/${district}`,
+              lastModified:
+                new Date(),
+              changeFrequency:
+                "daily",
+              priority: 0.9,
+            },
+
+            // District About
+            {
+              url: `${baseUrl}/${district}/about`,
+              lastModified:
+                new Date(),
+              changeFrequency:
+                "weekly",
+              priority: 0.8,
+            },
+
+            // District Items
+            {
+              url: `${baseUrl}/${district}/items`,
+              lastModified:
+                new Date(),
+              changeFrequency:
+                "daily",
+              priority: 0.9,
+            },
+
+            // District Services
+            {
+              url: `${baseUrl}/${district}/services`,
+              lastModified:
+                new Date(),
+              changeFrequency:
+                "weekly",
+              priority: 0.8,
+            },
+
+            // District Contact
+            {
+              url: `${baseUrl}/${district}/contact`,
+              lastModified:
+                new Date(),
+              changeFrequency:
+                "monthly",
+              priority: 0.7,
+            },
+          ];
+        }
+      );
 
     return [
       // Homepage
@@ -45,32 +88,30 @@ export default async function sitemap() {
         url: baseUrl,
         lastModified:
           new Date(),
+        changeFrequency:
+          "daily",
         priority: 1,
       },
 
-      // Static pages
+      // Static Pages
       {
-        url:
-          `${baseUrl}/about`,
+        url: `${baseUrl}/about`,
         priority: 0.8,
       },
       {
-        url:
-          `${baseUrl}/items`,
+        url: `${baseUrl}/items`,
         priority: 0.9,
       },
       {
-        url:
-          `${baseUrl}/services`,
+        url: `${baseUrl}/services`,
         priority: 0.8,
       },
       {
-        url:
-          `${baseUrl}/contact`,
+        url: `${baseUrl}/contact`,
         priority: 0.8,
       },
 
-      // 3900+ districts
+      // All District URLs
       ...districtUrls,
     ];
   } catch (error) {
