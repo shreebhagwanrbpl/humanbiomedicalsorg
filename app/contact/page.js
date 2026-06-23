@@ -128,7 +128,7 @@ export default function ContactPage({
     e.preventDefault();
 
     // VALIDATION
-    // VALIDATION
+
     if (!formData.name.trim()) {
       toast.error("Please enter your name");
       return;
@@ -183,12 +183,6 @@ export default function ContactPage({
     if (formData.message.trim().length < 10) {
       toast.error("Enquiry must be at least 10 characters");
       return;
-    } {
-
-      toast.error("Please fill all required fields");
-
-      return;
-
     }
 
     try {
@@ -208,7 +202,9 @@ export default function ContactPage({
         }
       );
 
-      toast.success("Query Sent Successfully");
+      toast.success(
+        "Query Sent Successfully"
+      );
 
       setFormData({
         name: "",
@@ -222,7 +218,9 @@ export default function ContactPage({
 
       console.error(err);
 
-      toast.error("Failed To Send Query");
+      toast.error(
+        "Failed To Send Query"
+      );
 
     } finally {
 

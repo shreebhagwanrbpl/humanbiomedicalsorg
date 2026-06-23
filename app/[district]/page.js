@@ -1,15 +1,11 @@
 import HomePage from "../page";
 
-// SEO Metadata
 export async function generateMetadata({
   params,
 }) {
 
-  const resolvedParams =
-    await params;
-
   const district =
-    resolvedParams?.district || "";
+    params?.district || "";
 
   const city = district
     .replace(/-/g, " ")
@@ -19,24 +15,55 @@ export async function generateMetadata({
         char.toUpperCase()
     );
 
-  return {
-    title:
-      `Biomedical Equipment Supplier in ${city} | Human Biomedicals`,
+  const title =
+    `Biomedical Equipment Supplier in ${city} | Human Biomedicals`;
 
-    description:
-      `Buy biomedical, pathology, laboratory and hospital equipment in ${city}. Trusted medical equipment supplier in ${city}.`,
+  const description =
+    `Buy biomedical equipment, pathology analyzers, laboratory instruments, diagnostic systems and hospital equipment in ${city}. Trusted medical equipment supplier in ${city}.`;
+
+  const url =
+    `https://humanbiomedicals.org/${district}`;
+
+  return {
+    title,
+    description,
 
     keywords: [
       `Biomedical Equipment ${city}`,
       `Hospital Equipment ${city}`,
       `Pathology Equipment ${city}`,
       `Laboratory Equipment ${city}`,
+      `Diagnostic Equipment ${city}`,
       `${city} Medical Supplier`,
+      `${city} Biomedical Supplier`,
+      `${city} Hospital Equipment Supplier`,
+      "Human Biomedials",
     ],
 
     alternates: {
-      canonical:
-        `https://humanbiomedicals.org/${district}`,
+      canonical: url,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName:
+        "Human Biomedials",
+      locale: "en_IN",
+      type: "website",
+    },
+
+    twitter: {
+      card:
+        "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -45,11 +72,8 @@ export default async function Page({
   params,
 }) {
 
-  const resolvedParams =
-    await params;
-
   const district =
-    resolvedParams?.district ||
+    params?.district ||
     "jaipur";
 
   const city = district

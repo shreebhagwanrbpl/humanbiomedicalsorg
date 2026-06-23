@@ -66,7 +66,7 @@ export default function ItemsPage({ city, }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const productsPerPage = 10;
-  const [visible, setVisible] = useState(8);
+  const [visible, setVisible] = useState(12);
 
   // FETCH PRODUCTS FROM FIREBASE
   useEffect(() => {
@@ -160,9 +160,54 @@ export default function ItemsPage({ city, }) {
   const startIndex =
     (currentPage - 1) * productsPerPage;
   useEffect(() => {
-    setVisible(8);
+    setVisible(12);
   }, [search, activeCategory]);
-  if (loading) return null;
+
+
+  if (loading) {
+    return (
+      <main className="max-w-7xl mx-auto px-5 py-32">
+
+        <div className="animate-pulse">
+
+          <div className="h-16 w-3/4 mx-auto bg-gray-200 rounded mb-6"></div>
+
+          <div className="h-6 w-1/2 mx-auto bg-gray-200 rounded mb-16"></div>
+
+          <div className="grid md:grid-cols-2 gap-10 mb-20">
+
+            <div className="h-[450px] bg-gray-200 rounded-3xl"></div>
+
+            <div>
+              <div className="h-10 bg-gray-200 rounded mb-5"></div>
+              <div className="h-5 bg-gray-200 rounded mb-3"></div>
+              <div className="h-5 bg-gray-200 rounded mb-3"></div>
+              <div className="h-5 w-3/4 bg-gray-200 rounded"></div>
+            </div>
+
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-3xl border p-5"
+              >
+                <div className="h-[220px] bg-gray-200 rounded-xl mb-4"></div>
+                <div className="h-5 bg-gray-200 rounded mb-3"></div>
+                <div className="h-5 w-2/3 bg-gray-200 rounded mb-3"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+              </div>
+            ))}
+
+          </div>
+
+        </div>
+
+      </main>
+    );
+  }
 
 
   return (
@@ -300,7 +345,7 @@ export default function ItemsPage({ city, }) {
                       "/placeholder.jpg"
                     }
                     alt={featuredProduct.title}
-                    className="w-full h-[250px] sm:h-[350px] lg:h-[500px] object-cover"
+                    className="w-full h-[400px] object-contain bg-white p-6"
                   />
 
                 </div>
@@ -377,7 +422,7 @@ export default function ItemsPage({ city, }) {
           </div>
 
           {/* PRODUCTS GRID */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
 
             {visibleProducts.map((item, index) => (
@@ -394,18 +439,17 @@ export default function ItemsPage({ city, }) {
                   delay: index * 0.08,
                 }}
                 viewport={{ once: true }}
-                className="group bg-white rounded-[30px] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition duration-500"
-              >
+                className="group bg-white rounded-[30px] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition duration-500 flex flex-col h-full" >
 
                 {/* Image */}
-                <div className="relative overflow-hidden">
+                <div className="relative overflow-hidden h-[260px] flex items-center justify-center bg-white">
                   <img
-                    src={
-                      item.image ||
-                      "/placeholder.jpg"
-                    }
-                    alt={`${item.title} in ${city} | Human Biomedicals`}
-                    className="w-full h-[260px] object-cover group-hover:scale-105 transition duration-700"
+                    src={item.image || "/placeholder.jpg"}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "/placeholder.jpg";
+                    }}
+                    alt={item.title}
                   />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-semibold text-slate-800">
                     {item.instrument || "Medical"}
@@ -413,12 +457,12 @@ export default function ItemsPage({ city, }) {
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1">
                   <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
 
                     Human Biomedicals
                   </p>
-                  <h6 className="mt-3 text-2xl font-bold leading-snug text-slate-900">
+                  <h6 className="mt-3 text-lg font-bold h-[80px] leading-snug text-slate-900 overflow-hidden">
                     Product: {item.title}
                   </h6>
                   {/* <p className="text-sm text-slate-500 mt-2">
@@ -465,7 +509,7 @@ export default function ItemsPage({ city, }) {
           {
             visible < filteredProducts.length && (
               <button
-                onClick={() => setVisible(prev => prev + 8)}
+                onClick={() => setVisible(prev => prev + 12)}
                 className="mt-10 px-8 py-3 bg-violet-600 text-white rounded-full"
               >
                 Load More

@@ -1,6 +1,5 @@
 import ItemsPage from "../../items/page";
 
-// SEO Metadata
 export async function generateMetadata({
   params,
 }) {
@@ -10,20 +9,26 @@ export async function generateMetadata({
 
   const city = district
     ? district
-        .replace(/-/g, " ")
-        .replace(
-          /\b\w/g,
-          (char) =>
-            char.toUpperCase()
-        )
+      .replace(/-/g, " ")
+      .replace(
+        /\b\w/g,
+        (char) =>
+          char.toUpperCase()
+      )
     : "India";
 
-  return {
-    title:
-      `Buy Medical Laboratory Equipment in ${city} | Human Biomedicals`,
+  const title =
+    `Medical Laboratory Equipment Supplier in ${city} | Human Biomedicals`;
 
-    description:
-      `Buy laboratory equipment, hospital machines, pathology devices, diagnostic systems in ${city}. Best medical equipment supplier in ${city}.`,
+  const description =
+    `Buy laboratory equipment, pathology machines, diagnostic systems, hospital equipment and healthcare devices in ${city}. Trusted medical equipment supplier in ${city}.`;
+
+  const url =
+    `https://humanbiomedicals.org/${district}/items`;
+
+  return {
+    title,
+    description,
 
     keywords: [
       `Medical Equipment ${city}`,
@@ -32,11 +37,35 @@ export async function generateMetadata({
       `Diagnostic Equipment ${city}`,
       `Pathology Equipment ${city}`,
       `${city} Medical Supplier`,
+      `${city} Laboratory Supplier`,
+      `${city} Hospital Equipment Supplier`,
+      "Human Biomedicals",
     ],
 
     alternates: {
-      canonical:
-        `https://humanbiomedicals.org/${district}/items`,
+      canonical: url,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName:
+        "Human Biomedicals",
+      locale: "en_IN",
+      type: "website",
+    },
+
+    twitter: {
+      card:
+        "summary_large_image",
+      title,
+      description,
     },
   };
 }
@@ -50,12 +79,12 @@ export default function DistrictItemsPage({
 
   const city = district
     ? district
-        .replace(/-/g, " ")
-        .replace(
-          /\b\w/g,
-          (char) =>
-            char.toUpperCase()
-        )
+      .replace(/-/g, " ")
+      .replace(
+        /\b\w/g,
+        (char) =>
+          char.toUpperCase()
+      )
     : "";
 
   return (
