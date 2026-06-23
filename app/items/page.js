@@ -329,7 +329,8 @@ export default function ItemsPage({ city, }) {
 
       {/* FEATURED PRODUCT */}
       {
-        featuredProduct && (
+        featuredProduct &&
+        !search && (
           <section className="pb-24">
 
             <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
@@ -422,100 +423,150 @@ export default function ItemsPage({ city, }) {
           </div>
 
           {/* PRODUCTS GRID */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* PRODUCTS GRID */}
 
+          {filteredProducts.length > 0 ? (
 
-            {visibleProducts.map((item, index) => (
-              <motion.div
+            <>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                key={item.id || index}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.08,
-                }}
-                viewport={{ once: true }}
-                className="group bg-white rounded-[30px] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition duration-500 flex flex-col h-full" >
-
-                {/* Image */}
-                <div className="relative overflow-hidden h-[260px] flex items-center justify-center bg-white">
-                  <img
-                    src={item.image || "/placeholder.jpg"}
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "/placeholder.jpg";
+                {visibleProducts.map((item, index) => (
+                  <motion.div
+                    key={item.id || index}
+                    initial={{ opacity: 0, y: 35 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
                     }}
-                    alt={item.title}
+                    viewport={{ once: true }}
+                    className="group bg-white rounded-[30px] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition duration-500 flex flex-col h-full"
+                  >
+
+                    <div className="relative overflow-hidden h-[260px] flex items-center justify-center bg-white">
+                      <img
+                        src={item.image || "/placeholder.jpg"}
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "/placeholder.jpg";
+                        }}
+                        alt={item.title}
+                      />
+
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-semibold text-slate-800">
+                        {item.instrument || "Medical"}
+                      </div>
+                    </div>
+
+                    <div className="p-6 flex flex-col flex-1">
+
+                      <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
+                        Human Biomedicals
+                      </p>
+
+                      <h6 className="mt-3 text-lg font-bold h-[80px] leading-snug text-slate-900 overflow-hidden">
+                        Product: {item.title}
+                      </h6>
+
+                      <p className="text-sm text-slate-500 mt-2">
+                        Throughput: {item.throughput}
+                      </p>
+
+                      <p className="text-sm text-slate-500 mt-2">
+                        Model: {item.model}
+                      </p>
+
+                      <div className="mt-7">
+                        <button
+                          onClick={() =>
+                            router.push(
+                              `${basePath}/items/${item.slug}`
+                            )
+                          }
+                          className="bg-slate-900 text-white px-5 py-3 rounded-full font-semibold hover:bg-violet-600 transition duration-300"
+                        >
+                          Enquiry
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </motion.div>
+                ))}
+
+              </div>
+
+              {visible < filteredProducts.length && (
+                <button
+                  onClick={() =>
+                    setVisible((prev) => prev + 12)
+                  }
+                  className="mt-10 px-8 py-3 bg-violet-600 text-white rounded-full"
+                >
+                  Load More
+                </button>
+              )}
+            </>
+
+          ) : (
+
+            <div className="max-w-3xl mx-auto py-20">
+
+              <div className="bg-white border border-slate-200 rounded-[40px] shadow-2xl p-14 text-center">
+
+                <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-r from-violet-100 to-sky-100 flex items-center justify-center mb-8">
+
+                  <Search
+                    size={50}
+                    className="text-violet-600"
                   />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-semibold text-slate-800">
-                    {item.instrument || "Medical"}
-                  </div>
+
                 </div>
 
-                {/* Content */}
-                <div className="p-6 flex flex-col flex-1">
-                  <p className="text-violet-600 font-semibold uppercase tracking-widest text-xs">
+                <h2 className="text-4xl font-bold text-slate-900">
+                  No Products Found
+                </h2>
 
-                    Human Biomedicals
-                  </p>
-                  <h6 className="mt-3 text-lg font-bold h-[80px] leading-snug text-slate-900 overflow-hidden">
-                    Product: {item.title}
-                  </h6>
-                  {/* <p className="text-sm text-slate-500 mt-2">
-                    Buy {item.title} in {district},
-                    best laboratory and hospital
-                    equipment supplier in {district}.
-                  </p> */}
-                  <p className="text-sm text-slate-500 mt-2">
-                    Throughput: {item.throughput}
-                  </p>
-                  <p className="text-sm text-slate-500 mt-2">
-                    Model: {item.model}
-                  </p>
+                <p className="mt-5 text-lg text-slate-500">
+                  We couldn't find any products matching
+                </p>
 
+                <div className="mt-4 inline-flex bg-slate-100 px-5 py-3 rounded-full font-semibold text-slate-700">
+                  "{search}"
+                </div>
 
-                  {/* Buttons */}
-                  < div className="mt-7 flex items-center justify-between" >
-                    {/* ENQUIRY */}
+                <div className="mt-10 flex justify-center gap-4 flex-wrap">
 
-                    <button
-                      onClick={() =>
-                        router.push(
-                          `${basePath}/items/${item.title
-                            .toLowerCase()
-                            .replace(/[^a-z0-9\s-]/g, "")
-                            .replace(/\s+/g, "-")}`
-                        )
-                      }
-                      className="bg-slate-900 text-white px-5 py-3 rounded-full font-semibold hover:bg-violet-600 transition duration-300"
-                    >
-                      Enquiry
-                    </button>
+                  <button
+                    onClick={() => setSearch("")}
+                    className="px-8 py-4 rounded-full bg-gradient-to-r from-violet-600 to-sky-500 text-white font-semibold shadow-lg hover:scale-105 transition"
+                  >
+                    Clear Search
+                  </button>
 
-                  </div >
-                </div >
+                  <button
+                    onClick={() =>
+                      router.push(`${basePath}/contact`)
+                    }
+                    className="px-8 py-4 rounded-full border border-slate-300 text-slate-700 font-semibold"
+                  >
+                    Request Product
+                  </button>
 
+                </div>
 
-              </motion.div >
+              </div>
 
-            ))
-            }
+            </div>
 
-          </div >
-          {
-            visible < filteredProducts.length && (
-              <button
-                onClick={() => setVisible(prev => prev + 12)}
-                className="mt-10 px-8 py-3 bg-violet-600 text-white rounded-full"
-              >
-                Load More
-              </button>
-            )
-          }
+          )}
+          <button
+            onClick={() => setVisible(prev => prev + 12)}
+            className="mt-10 px-8 py-3 bg-violet-600 text-white rounded-full"
+          >
+            Load More
+          </button>
+
         </div >
 
       </section >
