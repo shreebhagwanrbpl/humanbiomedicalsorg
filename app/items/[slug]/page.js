@@ -1,46 +1,59 @@
 import ProductDetails from "./ProductDetails";
+import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 
-export async function generateMetadata({
-    params,
-}) {
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
 
-    const { slug } =
-        await params;
+    const productName = slug
+        ?.replace(/-/g, " ")
+        ?.replace(/\b\w/g, (c) => c.toUpperCase());
 
-    const productName =
-        slug
-            .replace(/-/g, " ")
-            .replace(
-                /\b\w/g,
-                (c) => c.toUpperCase()
-            );
+    const title = `${productName} Supplier in India | Price, Dealer & Distributor | Central Biomedicals`;
 
-    const title =
-        `${productName} Supplier in India | Human Biomedicals`;
+    const description = `Buy ${productName} at best price in India. Trusted supplier, dealer and distributor of ${productName} for hospitals, laboratories, diagnostic centers, research institutes and healthcare facilities. Contact Central Biomedicals for latest quotation and product details.`;
 
-    const description =
-        `Buy ${productName} from Human Biomedicals. Trusted supplier of biomedical equipment and laboratory instruments across India.`;
+    const url = `https://humanbiomedicals.org/items/${slug}`;
 
     return {
         title,
         description,
 
-        alternates: {
-            canonical:
-                `https://humanbiomedicals.in/items/${slug}`,
-        },
+        keywords: [
+            productName,
+            `${productName} Supplier`,
+            `${productName} Dealer`,
+            `${productName} Distributor`,
+            `${productName} Manufacturer`,
+            `${productName} Exporter`,
+            `${productName} Price`,
+            `${productName} Price in India`,
+            `${productName} Supplier in India`,
+            `${productName} Dealer in India`,
+            `${productName} Distributor in India`,
+            `Buy ${productName}`,
+            `${productName} for Laboratory`,
+            `${productName} for Hospital`,
+            `${productName} for Diagnostic Center`,
+            "Biomedical Equipment",
+            "Medical Equipment",
+            "Laboratory Equipment",
+            "Diagnostic Equipment",
+            "Hospital Equipment",
+            "Healthcare Equipment",
+            "Central Biomedicals",
+        ],
 
-        robots: {
-            index: true,
-            follow: true,
+        alternates: {
+            canonical: url,
         },
 
         openGraph: {
             title,
             description,
-            url:
-                `https://humanbiomedicals.in/items/${slug}`,
+            url,
+            siteName: "Central Biomedicals",
             type: "website",
+            locale: "en_IN",
         },
 
         twitter: {
@@ -48,9 +61,27 @@ export async function generateMetadata({
             title,
             description,
         },
+
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+                "max-video-preview": -1,
+                "max-image-preview": "large",
+                "max-snippet": -1,
+            },
+        },
+
+        metadataBase: new URL("https://centralbiomedials.com"),
     };
 }
 
-export default function Page() {
-    return <ProductDetails />;
+export default async function Page({ params }) {
+    const { slug } = await params;
+    const allProducts = await fetchFullCatalog();
+    const product = allProducts.find((p) => p.slug === slug) || null;
+
+    return <ProductDetails slug={slug} product={product} />;
 }

@@ -186,3 +186,150 @@
     opacity: 0.7;
     cursor: not-allowed;
 }
+
+.product-detail-image {
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+}
+
+.thumbnail-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.thumbnail-item {
+    width: 90px;
+    height: 90px;
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-image-preview {
+    width: 100%;
+    height: 450px;
+    background: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+}
+
+.seo-content {
+    max-width: 1200px;
+    margin: 60px auto 0;
+    padding: 40px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+}
+
+.seo-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 35px;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.seo-content h2:first-child {
+    margin-top: 0;
+}
+
+.seo-content h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.seo-content p {
+    font-size: 17px;
+    line-height: 1.9;
+    color: #4b5563;
+    margin-bottom: 18px;
+}
+
+.seo-content strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+.seo-content ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.seo-content li {
+    font-size: 16px;
+    color: #4b5563;
+    line-height: 1.8;
+    margin-bottom: 8px;
+}
+
+/* TABLET */
+
+@media (max-width: 992px) {
+
+    .seo-content {
+        padding: 30px;
+    }
+
+    .seo-content h2 {
+        font-size: 28px;
+    }
+
+    .seo-content h3 {
+        font-size: 22px;
+    }
+
+    .seo-content p {
+        font-size: 16px;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .seo-content {
+        padding: 20px;
+        margin-top: 40px;
+        border-radius: 16px;
+    }
+
+    .seo-content h2 {
+        font-size: 24px;
+        margin-top: 25px;
+    }
+
+    .seo-content h3 {
+        font-size: 20px;
+    }
+
+    .seo-content p {
+        font-size: 15px;
+        line-height: 1.8;
+    }
+}

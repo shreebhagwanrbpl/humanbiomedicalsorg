@@ -1,4 +1,4 @@
-import ItemsPage from "../../items/page";
+import ItemsPage from "../../itemsbkp/page";
 
 export async function generateMetadata({
   params,

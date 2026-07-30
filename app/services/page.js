@@ -15,7 +15,7 @@ import {
 
 import { useEffect, useState } from "react";
 
-import { db } from "@/firebase";
+import { db } from "../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 // STATIC ICONS
