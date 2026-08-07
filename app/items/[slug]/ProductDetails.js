@@ -6,13 +6,14 @@ import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 
 import {
-    FaPlay,
-    FaShareAlt,
-    FaWhatsapp,
-    FaFacebook,
-    FaInstagram,
-    FaLink,
-} from "react-icons/fa";
+    Play,
+    Share2,
+    Facebook,
+    Instagram,
+    Link2,
+    FileText,
+    Download,
+} from "lucide-react";
 
 import {
     addDoc,
@@ -20,19 +21,34 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { generateBrochurePDF, getProductMainImage, resolveImageUrl } from "@/lib/generateBrochurePDF";
 
 export default function ProductDetails({ slug, product: initialProduct }) {
     const [product, setProduct] = useState(initialProduct || null);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [selectedImage, setSelectedImage] = useState(() => {
-        if (initialProduct) {
-            return initialProduct.images?.length > 0 ? initialProduct.images[0] : (initialProduct.image || "");
-        }
-        return "";
+        return getProductMainImage(initialProduct);
     });
     const [selectedMedia, setSelectedMedia] = useState("image");
+    const [downloadingPDF, setDownloadingPDF] = useState(false);
     const [showShare, setShowShare] = useState(false);
     const [loading, setLoading] = useState(!initialProduct);
+
+    const handleDownloadBrochure = async () => {
+        if (!product) return;
+        try {
+            setDownloadingPDF(true);
+            toast.loading("Generating product brochure PDF...", { id: "pdf-toast" });
+            const currentImg = resolveImageUrl(selectedImage) || getProductMainImage(product);
+            await generateBrochurePDF(product, currentImg);
+            toast.success("Brochure downloaded successfully!", { id: "pdf-toast" });
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to generate PDF brochure.", { id: "pdf-toast" });
+        } finally {
+            setDownloadingPDF(false);
+        }
+    };
 
     const shareRef = useRef();
     const [form, setForm] = useState({
@@ -51,7 +67,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
     useEffect(() => {
         if (initialProduct) {
             setProduct(initialProduct);
-            setSelectedImage(initialProduct.images?.length > 0 ? initialProduct.images[0] : (initialProduct.image || ""));
+            setSelectedImage(getProductMainImage(initialProduct));
             setSelectedMedia("image");
             setLoading(false);
             return;
@@ -66,11 +82,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                 setProduct(found || null);
 
                 if (found) {
-                    if (found.images?.length > 0) {
-                        setSelectedImage(found.images[0]);
-                    } else {
-                        setSelectedImage(found.image || "");
-                    }
+                    setSelectedImage(getProductMainImage(found));
                     setSelectedMedia("image");
                 }
             } catch (error) {
@@ -301,57 +313,50 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                     />
                                 </video>
                             ) : (
-                                <>
-                                    {!imageLoaded && (
-                                        <div className="absolute inset-0 bg-slate-100 animate-pulse" />
-                                    )}
-
-                                    <img
-                                        src={selectedImage || product.image || "/placeholder.jpg"}
-                                        alt={product.title}
-                                        onLoad={() => setImageLoaded(true)}
-                                        decoding="async"
-                                        className={`w-full h-full object-contain p-4 transition duration-500 ${imageLoaded
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                            }`}
-                                        onError={(e) => {
-                                            e.currentTarget.src = "/placeholder.jpg";
-                                        }}
-                                    />
-                                </>
+                                <img
+                                    src={resolveImageUrl(selectedImage) || getProductMainImage(product)}
+                                    alt={product.title}
+                                    decoding="async"
+                                    className="w-full h-full object-contain p-6 transition duration-300"
+                                    onError={(e) => {
+                                        e.currentTarget.src = "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80";
+                                    }}
+                                />
                             )}
                         </div>
 
                         <div className="flex flex-wrap gap-4 mt-12">
                             {(product.images?.length
                                 ? product.images
-                                : [product.image || "/placeholder.jpg"]
-                            ).map((img, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        setSelectedImage(img);
-                                        setSelectedMedia("image");
-                                    }}
-                                    className={`w-20 h-20 rounded-xl overflow-hidden border-2 relative ${selectedMedia === "image" &&
-                                        selectedImage === img
-                                        ? "border-sky-600"
-                                        : "border-gray-200"
-                                        }`}
-                                >
-                                    <img
-                                        src={img}
-                                        alt=""
-                                        decoding="async"
-                                        loading="lazy"
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.currentTarget.src = "/placeholder.jpg";
+                                : [product.image || getProductMainImage(product)]
+                            ).map((imgItem, index) => {
+                                const imgUrl = resolveImageUrl(imgItem) || getProductMainImage(product);
+                                return (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setSelectedImage(imgUrl);
+                                            setSelectedMedia("image");
                                         }}
-                                    />
-                                </button>
-                            ))}
+                                        className={`w-20 h-20 rounded-xl overflow-hidden border-2 relative ${selectedMedia === "image" &&
+                                            (selectedImage === imgUrl || resolveImageUrl(selectedImage) === imgUrl)
+                                            ? "border-sky-600"
+                                            : "border-gray-200"
+                                            }`}
+                                    >
+                                        <img
+                                            src={imgUrl}
+                                            alt=""
+                                            decoding="async"
+                                            loading="lazy"
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.src = "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80";
+                                            }}
+                                        />
+                                    </button>
+                                );
+                            })}
 
                             {product.video && (
                                 <button
@@ -361,22 +366,20 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                         : "border-gray-200"
                                         }`}
                                 >
-                                    <FaPlay size={20} />
+                                    <Play size={20} />
                                     <span className="text-xs mt-1">Video</span>
                                 </button>
                             )}
 
-                            {product.pdf && (
-                                <a
-                                    href={product.pdf}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-20 h-20 rounded-xl border flex flex-col items-center justify-center hover:bg-slate-100"
-                                >
-                                    📄
-                                    <span className="text-xs">PDF</span>
-                                </a>
-                            )}
+                            <button
+                                onClick={handleDownloadBrochure}
+                                disabled={downloadingPDF}
+                                className="h-20 px-5 rounded-xl border-2 border-amber-500 bg-amber-50 text-amber-800 flex flex-col items-center justify-center hover:bg-amber-100 transition font-medium"
+                                title="Download Product Specification Brochure PDF"
+                            >
+                                <Download size={20} className="text-amber-600 mb-1" />
+                                <span className="text-xs font-bold">{downloadingPDF ? "Downloading..." : "Brochure PDF"}</span>
+                            </button>
                         </div>
                     </div>
 
@@ -389,13 +392,13 @@ export default function ProductDetails({ slug, product: initialProduct }) {
 
                             <div
                                 ref={shareRef}
-                                className="relative"
+                                className="relative shrink-0"
                             >
                                 <button
                                     onClick={handleNativeShare}
                                     className="w-12 h-12 rounded-full border bg-white shadow flex items-center justify-center hover:bg-slate-100"
                                 >
-                                    <FaShareAlt size={18} />
+                                    <Share2 size={18} />
                                 </button>
 
                                 {showShare && (
@@ -404,7 +407,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                             onClick={handleCopy}
                                             className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded flex items-center gap-2"
                                         >
-                                            <FaLink />
+                                            <Link2 size={16} />
                                             Copy Link
                                         </button>
 
@@ -412,7 +415,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                             onClick={handleWhatsapp}
                                             className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded flex items-center gap-2"
                                         >
-                                            <FaWhatsapp className="text-green-600" />
+                                            <span className="text-green-600 font-bold text-base">💬</span>
                                             WhatsApp
                                         </button>
 
@@ -420,7 +423,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                             onClick={handleFacebook}
                                             className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded flex items-center gap-2"
                                         >
-                                            <FaFacebook className="text-blue-600" />
+                                            <Facebook size={16} className="text-blue-600" />
                                             Facebook
                                         </button>
 
@@ -428,12 +431,33 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                             onClick={handleInstagram}
                                             className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded flex items-center gap-2"
                                         >
-                                            <FaInstagram className="text-pink-600" />
+                                            <Instagram size={16} className="text-pink-600" />
                                             Instagram
                                         </button>
                                     </div>
                                 )}
                             </div>
+                        </div>
+
+                        {/* Brochure PDF Download Highlight Box */}
+                        <div className="mb-6 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border-2 border-amber-400/60 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h4 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                                    <FileText className="text-amber-600" size={20} />
+                                    Official Product Specification Brochure
+                                </h4>
+                                <p className="text-xs text-slate-600 mt-1">
+                                    Download detailed technical specifications, product features & application overview PDF.
+                                </p>
+                            </div>
+                            <button
+                                onClick={handleDownloadBrochure}
+                                disabled={downloadingPDF}
+                                className="shrink-0 bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition flex items-center gap-2 text-sm disabled:opacity-70"
+                            >
+                                <Download size={16} />
+                                {downloadingPDF ? "Generating PDF..." : "Download Brochure"}
+                            </button>
                         </div>
 
                         <div className="mt-12 bg-white p-6 sm:p-8 md:p-10 rounded-[24px] md:rounded-[30px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] space-y-4 font-medium text-slate-700">

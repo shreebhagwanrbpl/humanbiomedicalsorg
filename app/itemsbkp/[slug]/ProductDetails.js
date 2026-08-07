@@ -4,7 +4,7 @@ import "./productSlug.css";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { FaPlay } from "react-icons/fa";
+import { Play } from "lucide-react";
 import {
     doc,
     getDoc,

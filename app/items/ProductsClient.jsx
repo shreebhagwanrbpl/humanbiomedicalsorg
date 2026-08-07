@@ -2,6 +2,7 @@
 import toast, { Toaster } from "react-hot-toast";
 import React, { useEffect, useMemo, useState, useCallback, memo, Profiler } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   ShieldCheck,
@@ -147,6 +148,7 @@ const CategoryItem = memo(function CategoryItem({
 });
 
 export default function ProductsClient({ initialProducts = [], district = null, city = null }) {
+  const searchParams = useSearchParams();
   const [categorySearch, setCategorySearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [productSearch, setProductSearch] = useState("");
@@ -155,6 +157,23 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const [openedSubCategories, setOpenedSubCategories] = useState({});
   const [pendingScroll, setPendingScroll] = useState(null);
   const [showTopButton, setShowTopButton] = useState(false);
+
+  // Sync category or search from URL parameters
+  useEffect(() => {
+    if (!searchParams) return;
+    const categoryParam = searchParams.get("category");
+    const searchParam = searchParams.get("search");
+
+    if (categoryParam) {
+      setOpenedCategory(categoryParam);
+      setActiveCategory(categoryParam);
+      setProductSearch(categoryParam);
+      setSearchInput(categoryParam);
+    } else if (searchParam) {
+      setProductSearch(searchParam);
+      setSearchInput(searchParam);
+    }
+  }, [searchParams]);
 
   // Debounce search term updates to make search typing instant
   useEffect(() => {

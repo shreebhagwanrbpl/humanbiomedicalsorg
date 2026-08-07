@@ -346,12 +346,17 @@ export default function ContactPage({
 
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-widest text-violet-600">
-                      Phone Number
+                      Phone Numbers
                     </p>
 
-                    <h3 className="mt-2 text-xl font-bold text-slate-900">
-                      {getValue("Phone", "Phone Number")}
-                    </h3>
+                    <div className="mt-2 flex flex-col gap-1">
+                      <a href="tel:+919251598228" className="text-xl font-bold text-slate-900 hover:text-violet-600 transition">
+                        +91 9251598228
+                      </a>
+                      <a href="tel:+918112279728" className="text-xl font-bold text-slate-900 hover:text-violet-600 transition">
+                        +91 8112279728
+                      </a>
+                    </div>
                   </div>
 
                 </div>
