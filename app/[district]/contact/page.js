@@ -5,7 +5,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import { db } from "../lib/firebase";
+import { db } from "@/lib/firebase";
 
 export default async function DistrictContactPage({
   params,

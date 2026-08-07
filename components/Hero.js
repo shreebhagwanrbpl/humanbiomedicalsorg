@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { db } from "../lib/firebase";
+import { db } from "@/lib/firebase";
 
 import {
   doc,
