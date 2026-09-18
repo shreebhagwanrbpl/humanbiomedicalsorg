@@ -67,9 +67,9 @@ const SubCategoryItem = memo(function SubCategoryItem({
       >
         {isSubOpened && (
           <div className="max-h-40 overflow-y-auto custom-scrollbar space-y-1.5 pr-1">
-            {subList.map((item) => (
+            {subList.map((item, idx) => (
               <ProductLink
-                key={item.uid}
+                key={item.uid ? `${item.uid}-${idx}` : `${item.id || item.slug || "link"}-${idx}`}
                 item={item}
                 category={category}
                 scrollToProduct={scrollToProduct}
@@ -149,6 +149,7 @@ const CategoryItem = memo(function CategoryItem({
 
 export default function ProductsClient({ initialProducts = [], district = null, city = null }) {
   const searchParams = useSearchParams();
+  const [productsList, setProductsList] = useState(initialProducts);
   const [categorySearch, setCategorySearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [productSearch, setProductSearch] = useState("");
@@ -157,6 +158,36 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const [openedSubCategories, setOpenedSubCategories] = useState({});
   const [pendingScroll, setPendingScroll] = useState(null);
   const [showTopButton, setShowTopButton] = useState(false);
+
+  // Keep state in sync with server initialProducts
+  useEffect(() => {
+    setProductsList(initialProducts);
+  }, [initialProducts]);
+
+  // Live real-time background sync with /api/catalog on mount and when window gains focus
+  useEffect(() => {
+    let isMounted = true;
+    const syncLatestProducts = async () => {
+      try {
+        const res = await fetch("/api/catalog", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.products) && isMounted) {
+            setProductsList(json.products);
+          }
+        }
+      } catch (e) {
+        // Silently handle offline / fetch error
+      }
+    };
+
+    syncLatestProducts();
+    window.addEventListener("focus", syncLatestProducts);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("focus", syncLatestProducts);
+    };
+  }, []);
 
   // Sync category or search from URL parameters
   useEffect(() => {
@@ -188,7 +219,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     const start = performance.now();
     const query = productSearch.trim().toLowerCase();
     const filtered = query
-      ? initialProducts.filter((item) => {
+      ? productsList.filter((item) => {
         const title = (item.title || "").toLowerCase();
         const brand = (item.brand || "").toLowerCase();
         const model = (item.model || "").toLowerCase();
@@ -203,7 +234,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
           subCategory.includes(query)
         );
       })
-      : initialProducts;
+      : productsList;
 
     const grouped = {};
     const counts = {};
@@ -250,7 +281,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
       sortedGroupedProducts: sortedObj,
       categoryCounts: counts,
     };
-  }, [initialProducts, productSearch]);
+  }, [productsList, productSearch]);
 
   const getCategoryProductCount = useCallback((categoryName) => {
     return categoryCounts[categoryName] || 0;
@@ -274,7 +305,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     setPendingScroll(slug);
 
     // Auto-expand the target subcategory when scrolling to its product
-    const prod = initialProducts.find((p) => p.slug === slug);
+    const prod = productsList.find((p) => p.slug === slug);
     if (prod && prod.subCategory) {
       const subKey = `${category}-${prod.subCategory}`;
       setOpenedSubCategories((prev) => ({
@@ -282,7 +313,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         [subKey]: true,
       }));
     }
-  }, [initialProducts]);
+  }, [productsList]);
 
   // Scroll to selected sidebar item when category expansion finishes
   useEffect(() => {
@@ -567,9 +598,9 @@ export default function ProductsClient({ initialProducts = [], district = null, 
 
 
                             <div className="space-y-8">
-                              {list.slice(0, 12).map((product) => (
+                              {list.slice(0, 12).map((product, idx) => (
                                 <ProductCard
-                                  key={product.uid}
+                                  key={product.uid ? `${product.uid}-${idx}` : `${product.id || product.slug || "prod"}-${idx}`}
                                   product={product}
                                   district={district}
                                 />

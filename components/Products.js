@@ -25,7 +25,7 @@ export default function Products({ city, district }) {
       try {
         setLoading(true);
         const catalog = await fetchFullCatalog();
-        
+
         if (catalog && catalog.length > 0) {
           // Take top 6 published products
           const published = catalog
@@ -50,11 +50,12 @@ export default function Products({ city, district }) {
       <div className="absolute bottom-10 left-0 w-80 h-80 bg-sky-200/40 blur-3xl rounded-full pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+            <span className="inline-flex
+             items-center gap-2 bg-violet-100 text-violet-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
               <Sparkles size={14} /> Featured Medical Equipment
             </span>
 
@@ -91,7 +92,7 @@ export default function Products({ city, district }) {
           ) : (
             products.map((product, index) => (
               <motion.div
-                key={product.uid || product.id || index}
+                key={product.uid ? `${product.uid}-${index}` : `${product.id || product.slug || "featured"}-${index}`}
                 initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}

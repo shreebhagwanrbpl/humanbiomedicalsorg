@@ -1,38 +1,27 @@
-import ProductDetails from "../../../itemsbkp/[slug]/ProductDetails";
+import ProductDetails from "@/app/items/[slug]/ProductDetails";
+import { getProductBySlug } from "@/lib/db-server";
 
-export async function generateMetadata({
-    params,
-}) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-    const {
-        district,
-        slug,
-    } = await params;
+export async function generateMetadata({ params }) {
+    const { district, slug } = await params;
+    const product = await getProductBySlug(slug);
 
     const city =
         district
             ?.replace(/-/g, " ")
-            .replace(
-                /\b\w/g,
-                (c) => c.toUpperCase()
-            ) || "India";
+            .replace(/\b\w/g, (c) => c.toUpperCase()) || "India";
 
-    const productName =
-        slug
-            ?.replace(/-/g, " ")
-            .replace(
-                /\b\w/g,
-                (c) => c.toUpperCase()
-            ) || "";
+    const productName = product?.title || slug
+        ?.replace(/-/g, " ")
+        ?.replace(/\b\w/g, (c) => c.toUpperCase()) || "";
 
-    const title =
-        `${productName} Supplier in ${city} | Human Biomedical`;
+    const title = `${productName} Supplier in ${city} | Human Biomedicals`;
 
-    const description =
-        `Buy ${productName} in ${city} from Human Biomedical. Trusted supplier of biomedical equipment, laboratory instruments, pathology analyzers and healthcare solutions.`;
+    const description = product?.description || product?.desc || `Buy ${productName} in ${city} from Human Biomedicals. Trusted supplier of biomedical equipment, laboratory instruments, pathology analyzers and healthcare solutions.`;
 
-    const url =
-        `https://humanbiomedical.org/${district}/items/${slug}`;
+    const url = `https://humanbiomedicals.org/${district}/items/${slug}`;
 
     return {
         title,
@@ -51,12 +40,19 @@ export async function generateMetadata({
             `Hospital Equipment Supplier in ${city}`,
             `Diagnostic Equipment Supplier in ${city}`,
             city,
-            "Human Biomedical",
+            "Human Biomedicals",
         ],
 
         robots: {
             index: true,
             follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+                "max-video-preview": -1,
+                "max-image-preview": "large",
+                "max-snippet": -1,
+            },
         },
 
         alternates: {
@@ -67,32 +63,32 @@ export async function generateMetadata({
             title,
             description,
             url,
-            siteName: "Human Biomedical",
+            siteName: "Human Biomedicals",
             locale: "en_IN",
             type: "website",
+            images: product?.image ? [{ url: product.image }] : undefined,
         },
 
         twitter: {
             card: "summary_large_image",
             title,
             description,
+            images: product?.image ? [product.image] : undefined,
         },
+
+        metadataBase: new URL("https://humanbiomedicals.org"),
     };
 }
 
-export default async function DistrictProductPage({
-    params,
-}) {
-
-    const {
-        district,
-        slug,
-    } = await params;
+export default async function DistrictProductPage({ params }) {
+    const { district, slug } = await params;
+    const product = await getProductBySlug(slug);
 
     return (
         <ProductDetails
             district={district}
             slug={slug}
+            product={product}
         />
     );
 }

@@ -1,98 +1,82 @@
 import { db } from "@/lib/firebase";
-import {
-  collection,
-  getDocs,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { fetchFullCatalog } from "@/lib/db-server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function sitemap() {
-  const baseUrl =
-    "https://humanbiomedicals.org";
+  const baseUrl = "https://humanbiomedicals.org";
 
   try {
-    const snapshot =
-      await getDocs(
-        collection(
-          db,
-          "websites",
-          "humanbiomedicalsorg",
-          "districts"
-        )
+    // 1. Fetch District URLs
+    let districtUrls = [];
+    try {
+      const snapshot = await getDocs(
+        collection(db, "websites", "humanbiomedicalsorg", "districts")
       );
 
-    const districtUrls =
-      snapshot.docs.flatMap(
-        (doc) => {
-          const district =
-            doc.id;
+      districtUrls = snapshot.docs.flatMap((doc) => {
+        const district = doc.id;
+        return [
+          {
+            url: `${baseUrl}/${district}`,
+            lastModified: new Date(),
+            changeFrequency: "daily",
+            priority: 0.9,
+          },
+          {
+            url: `${baseUrl}/${district}/about`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.8,
+          },
+          {
+            url: `${baseUrl}/${district}/items`,
+            lastModified: new Date(),
+            changeFrequency: "daily",
+            priority: 0.9,
+          },
+          {
+            url: `${baseUrl}/${district}/services`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.8,
+          },
+          {
+            url: `${baseUrl}/${district}/contact`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.7,
+          },
+        ];
+      });
+    } catch (distErr) {
+      console.warn("Could not load districts for sitemap:", distErr.message);
+    }
 
-          return [
-            // Main district page
-            {
-              url: `${baseUrl}/${district}`,
-              lastModified:
-                new Date(),
-              changeFrequency:
-                "daily",
-              priority: 0.9,
-            },
-
-            // District About
-            {
-              url: `${baseUrl}/${district}/about`,
-              lastModified:
-                new Date(),
-              changeFrequency:
-                "weekly",
-              priority: 0.8,
-            },
-
-            // District Items
-            {
-              url: `${baseUrl}/${district}/items`,
-              lastModified:
-                new Date(),
-              changeFrequency:
-                "daily",
-              priority: 0.9,
-            },
-
-            // District Services
-            {
-              url: `${baseUrl}/${district}/services`,
-              lastModified:
-                new Date(),
-              changeFrequency:
-                "weekly",
-              priority: 0.8,
-            },
-
-            // District Contact
-            {
-              url: `${baseUrl}/${district}/contact`,
-              lastModified:
-                new Date(),
-              changeFrequency:
-                "monthly",
-              priority: 0.7,
-            },
-          ];
-        }
-      );
+    // 2. Fetch Product URLs
+    let productUrls = [];
+    try {
+      const products = await fetchFullCatalog();
+      productUrls = products.map((prod) => ({
+        url: `${baseUrl}/items/${prod.slug}`,
+        lastModified: prod.updatedAt ? new Date(prod.updatedAt) : new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }));
+    } catch (prodErr) {
+      console.warn("Could not load products for sitemap:", prodErr.message);
+    }
 
     return [
       // Homepage
       {
         url: baseUrl,
-        lastModified:
-          new Date(),
-        changeFrequency:
-          "daily",
+        lastModified: new Date(),
+        changeFrequency: "daily",
         priority: 1,
       },
-
       // Static Pages
       {
         url: `${baseUrl}/about`,
@@ -110,15 +94,13 @@ export default async function sitemap() {
         url: `${baseUrl}/contact`,
         priority: 0.8,
       },
-
+      // All Product URLs
+      ...productUrls,
       // All District URLs
       ...districtUrls,
     ];
   } catch (error) {
-    console.error(
-      "Sitemap Error:",
-      error
-    );
+    console.error("Sitemap Error:", error);
 
     return [
       {

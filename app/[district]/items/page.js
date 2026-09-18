@@ -1,30 +1,24 @@
-import ItemsPage from "../../itemsbkp/page";
+import ProductsClient from "@/app/items/ProductsClient";
+import { fetchFullCatalog } from "@/lib/db-server";
 
-export async function generateMetadata({
-  params,
-}) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-  const district =
-    params?.district || "";
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const district = resolvedParams?.district || "";
 
   const city = district
     ? district
       .replace(/-/g, " ")
-      .replace(
-        /\b\w/g,
-        (char) =>
-          char.toUpperCase()
-      )
+      .replace(/\b\w/g, (char) => char.toUpperCase())
     : "India";
 
-  const title =
-    `Medical Laboratory Equipment Supplier in ${city} | Human Biomedicals`;
+  const title = `Medical Laboratory Equipment Supplier in ${city} | Human Biomedicals`;
 
-  const description =
-    `Buy laboratory equipment, pathology machines, diagnostic systems, hospital equipment and healthcare devices in ${city}. Trusted medical equipment supplier in ${city}.`;
+  const description = `Buy laboratory equipment, pathology machines, diagnostic systems, hospital equipment and healthcare devices in ${city}. Trusted medical equipment supplier in ${city}.`;
 
-  const url =
-    `https://humanbiomedicals.org/${district}/items`;
+  const url = `https://humanbiomedicals.org/${district}/items`;
 
   return {
     title,
@@ -55,39 +49,36 @@ export async function generateMetadata({
       title,
       description,
       url,
-      siteName:
-        "Human Biomedicals",
+      siteName: "Human Biomedicals",
       locale: "en_IN",
       type: "website",
     },
 
     twitter: {
-      card:
-        "summary_large_image",
+      card: "summary_large_image",
       title,
       description,
     },
   };
 }
 
-export default function DistrictItemsPage({
-  params,
-}) {
-
-  const district =
-    params?.district || "";
+export default async function DistrictItemsPage({ params }) {
+  const resolvedParams = await params;
+  const district = resolvedParams?.district || "";
 
   const city = district
     ? district
       .replace(/-/g, " ")
-      .replace(
-        /\b\w/g,
-        (char) =>
-          char.toUpperCase()
-      )
+      .replace(/\b\w/g, (char) => char.toUpperCase())
     : "";
 
+  const allProducts = await fetchFullCatalog();
+
   return (
-    <ItemsPage city={city} />
+    <ProductsClient
+      initialProducts={allProducts}
+      district={district}
+      city={city}
+    />
   );
 }

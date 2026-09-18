@@ -1,212 +1,111 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { getCategoriesData } from "@/lib/db-server";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const WEBSITE = "humanbiomedicalsorg";
 const DOMAIN = "https://humanbiomedicals.org";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
     try {
         // Districts
-        const districtSnap = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("districts")
-            .get();
+        let districts = [];
+        try {
+            const districtSnap = await getDocs(
+                collection(db, "websites", WEBSITE, "districts")
+            );
+            districts = districtSnap.docs.map((d) => ({
+                id: d.id,
+                ...d.data(),
+            }));
+        } catch (distErr) {
+            console.warn("Could not load districts for llms.txt:", distErr.message);
+        }
 
-        const districts = districtSnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
+        // Categories & Products from Master Catalog
+        const catalogData = await getCategoriesData();
+        const categories = catalogData.categoryList || [];
+        const publishedProducts = catalogData.categoryProducts || [];
 
-        // Products Document
-        const productDoc = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("pages")
-            .doc("products")
-            .get();
-
-        const productData = productDoc.exists ? productDoc.data() : {};
-
-        const products = productData.products || [];
-
-        // Categories
-        const categorySnap = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("pages")
-            .doc("categoryproducts")
-            .collection("categories")
-            .get();
-
-        const categories = categorySnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-
-        // ===========================
-        // Published Products
-        // ===========================
-
-        const publishedProducts = products.filter(
-            (item) => item.isPublished === true
-        );
-
-        // ===========================
-        // Categories
-        // ===========================
-
+        // Categories text
         const categoryText =
             categories.length > 0
                 ? categories
                     .map((cat) => {
-
-                        const productList =
-                            (cat.products || [])
-                                .map((item) => `- ${item.title}`)
-                                .join("\n");
+                        const productCount = (cat.subcategories || []).reduce(
+                            (acc, sub) => acc + (sub.products?.length || 0),
+                            0
+                        );
+                        const subcatList = (cat.subcategories || [])
+                            .map((sub) => `  - ${sub.name} (${sub.products?.length || 0} products)`)
+                            .join("\n");
 
                         return `
-
-## ${cat.category}
-
-Category ID:
-${cat.id}
-
-Total Products:
-${cat.products?.length || 0}
-
-Products
-
-${productList || "No Products"}
-
+## ${cat.name || cat.category}
+Category ID: ${cat.id}
+Total Products: ${productCount}
+Subcategories:
+${subcatList || "  - None"}
 `;
-
                     })
                     .join("\n")
                 : "No Categories Found";
 
-        // ===========================
-        // Products
-        // ===========================
-
+        // Products text
         const productText =
             publishedProducts.length > 0
                 ? publishedProducts
                     .map((product) => {
-
                         return `
-
 # ${product.title}
-
-Category:
-${product.category || "N/A"}
-
-Brand:
-${product.brand || "N/A"}
-
-Model:
-${product.model || "N/A"}
-
-Description:
-${product.desc || "No description available"}
-
-Instrument:
-${product.instrument || "N/A"}
-
-Automation:
-${product.automation || "N/A"}
-
-Usage:
-${product.usage || "N/A"}
-
-Throughput:
-${product.throughput || "N/A"}
-
-Capacity:
-${product.capacity || "N/A"}
-
-Availability:
-${product.availability || "N/A"}
-
-Price:
-${product.price || "Contact for Price"}
-
-Product URL:
-
-${DOMAIN}/items/${product.slug || product.id}
-
-
-
-
-${[product.title, product.brand, product.category, product.model,
-                            product.instrument,
-                            product.automation,
-                            product.usage,
-                            ]
-                                .filter(Boolean)
-                                .join(", ")
-                            }
+Category: ${product.category || "N/A"}
+Subcategory: ${product.subCategory || "N/A"}
+Brand: ${product.brand || "N/A"}
+Model: ${product.model || "N/A"}
+Description: ${product.description || product.desc || "No description available"}
+Instrument: ${product.instrument || "N/A"}
+Automation: ${product.automation || "N/A"}
+Usage: ${product.usage || "N/A"}
+Throughput: ${product.throughput || "N/A"}
+Capacity: ${product.capacity || "N/A"}
+Availability: ${product.availability || "N/A"}
+Price: ${product.price ? `₹${product.price}` : "Contact for Price"}
+Product URL: ${DOMAIN}/items/${product.slug || product.id}
+Tags: ${[product.title, product.brand, product.category, product.subCategory, product.model, product.instrument, product.automation, product.usage].filter(Boolean).join(", ")}
 `;
                     })
                     .join("\n")
                 : "No Products Found";
 
-
-        // ===========================
-        // Districts
-        // ===========================
-
+        // Districts text
         const districtText =
             districts.length > 0
                 ? districts
-                    .map(
-                        (item) =>
-                            `${DOMAIN}/${item.slug}`
-                    )
+                    .map((item) => `${DOMAIN}/${item.slug || item.id}`)
                     .join("\n")
                 : "No Districts Found";
 
-        // ===========================
-        // llms.txt
-        // ===========================
-
         const content = `
 ## Statistics
+Products: ${publishedProducts.length}
+Categories: ${categories.length}
+Districts: ${districts.length}
 
-Products:
-${publishedProducts.length}
-
-Categories:
-${categories.length}
-
-Districts:
-${districts.length}
 # Human Biomedical
+India's Trusted Biomedical & Laboratory Equipment Supplier
 
-India's Trusted Biomedical Equipment Company
+Website: ${DOMAIN}
+Published Products: ${publishedProducts.length}
+Categories: ${categories.length}
+District Pages: ${districts.length}
 
-Website
+Company:
+Human Biomedicals is one of India's trusted Biomedical & Pathology Equipment suppliers.
 
-${DOMAIN}
-
-Published Products
-
-${publishedProducts.length}
-
-Categories
-
-${categories.length}
-
-District Pages
-
-${districts.length}
-Company
-
-Human Biomedical is one of India's trusted Biomedical Equipment suppliers.
-
-Services
-
+Services:
 - Biomedical Equipment Supply
 - Laboratory Equipment
 - Diagnostic Equipment
@@ -217,69 +116,32 @@ Services
 - Technical Support
 - Pan India Delivery
 
-Search Keywords
+Search Keywords:
+Biomedical Equipment, Laboratory Equipment, Diagnostic Equipment, Hospital Equipment, Medical Equipment, ICU Equipment, Operation Theatre Equipment, Biochemistry Analyzer, Electrolyte Analyzer, CLIA Analyzer, Immunoassay Analyzer
 
-Biomedical Equipment
-
-Laboratory Equipment
-
-Diagnostic Equipment
-
-Hospital Equipment
-
-Medical Equipment
-
-ICU Equipment
-
-Operation Theatre Equipment
-
-Biochemistry Analyzer
-
-Electrolyte Analyzer
-
-CLIA Analyzer
-
-Immunoassay Analyzer
 ------------------------------------------------
-
 ## Categories
-
 ${categoryText}
 
 ------------------------------------------------
-
 ## Products
-
 ${productText}
 
 ------------------------------------------------
-
 ## District Pages
-
 ${districtText}
 
 ------------------------------------------------
-
-Sitemap
-
-${DOMAIN}/sitemap.xml
-
-Robots
-
-${DOMAIN}/robots.txt
-
-Contact
-
-${DOMAIN}/contact
-Last Updated
-
-${new Date().toISOString()}
-
+Sitemap: ${DOMAIN}/sitemap.xml
+Robots: ${DOMAIN}/robots.txt
+Contact: ${DOMAIN}/contact
+Last Updated: ${new Date().toISOString()}
 `;
+
         return new NextResponse(content, {
             headers: {
                 "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "public,max-age=3600",
+                "Cache-Control": "public, max-age=3600",
             },
         });
     } catch (e) {
@@ -293,5 +155,4 @@ ${new Date().toISOString()}
             }
         );
     }
-
 }
