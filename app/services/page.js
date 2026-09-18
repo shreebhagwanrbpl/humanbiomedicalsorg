@@ -109,8 +109,8 @@ export default function ServicesPage({ city },) {
               className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-slate-900"
             >
               {city
-                ? `${city} Healthcare & Laboratory Equipment Services`
-                : "Healthcare & Laboratory Equipment Services"}
+                ? `${city} Empowering Healthcare with Advanced Solutions`
+                : "Empowering Healthcare with Advanced Solutions"}
             </motion.h1>
 
             <p className="mt-8 text-lg sm:text-xl leading-9 text-slate-600">
@@ -354,11 +354,10 @@ export default function ServicesPage({ city },) {
               </h2>
 
               <p className="mt-6 text-lg leading-9 text-white/90">
-                Contact Human Biomedicals LLP for premium laboratory
-                instruments, hospital equipment,
-                pathology systems, and diagnostic devices.
+               Get in touch with Human Biomedicals LLP for advanced 
+               laboratory instruments, hospital equipment, diagnostic systems,
+                and reliable healthcare solutions.
               </p>
-
             </div>
 
             <button

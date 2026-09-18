@@ -34,7 +34,7 @@ export default function AboutPage({
             </span>
 
             <h1 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
-              Leading Laboratory & Hospital Equipment Company
+              Advancing Healthcare Through Reliable Equipment 
               {city && ` in ${city}`}
             </h1>
 
@@ -55,7 +55,7 @@ export default function AboutPage({
             <div>
 
               <h2 className="text-4xl font-bold text-slate-900 leading-tight">
-                Delivering Advanced Healthcare Technology Solutions
+              Empowering Healthcare with Advanced Technology
                 {city && ` in ${city}`}
               </h2>
 
@@ -212,7 +212,7 @@ export default function AboutPage({
             </span>
 
             <h2 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
-              Trusted Healthcare Equipment Partner
+             Reliable Technology for Modern Healthcare
               {city && ` in ${city}`}
             </h2>
 
@@ -240,8 +240,8 @@ export default function AboutPage({
               </h3>
 
               <p className="mt-5 text-slate-600 leading-8">
-                High-quality laboratory instruments, diagnostic systems,
-                hospital devices, and healthcare technology solutions
+              Delivering advanced laboratory instruments, diagnostic systems, 
+              hospital equipment, and innovative healthcare technology solutions.
                 {city && ` in ${city}`}.
               </p>
 
@@ -324,8 +324,9 @@ export default function AboutPage({
               </h4>
 
               <p className="mt-5 text-slate-600 leading-8">
-                Human Biomedicals LLP started with a vision to provide
-                premium laboratory and hospital equipment solutions
+              Human Biomedicals LLP was founded with a vision to deliver 
+              high-quality laboratory, diagnostic, and hospital equipment solutions 
+              that support better healthcare.
                 {city && ` in ${city}`}.
               </p>
 
