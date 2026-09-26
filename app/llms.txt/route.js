@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCategoriesData } from "@/lib/db-server";
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { fetchRawCatalogData, getDistrictsData, WEBSITE_ID } from "@/lib/admin-api";
 
-const WEBSITE = "humanbiomedicalsorg";
 const DOMAIN = "https://humanbiomedicals.org";
 
 export const dynamic = "force-dynamic";
@@ -14,19 +11,13 @@ export async function GET() {
         // Districts
         let districts = [];
         try {
-            const districtSnap = await getDocs(
-                collection(db, "websites", WEBSITE, "districts")
-            );
-            districts = districtSnap.docs.map((d) => ({
-                id: d.id,
-                ...d.data(),
-            }));
+            districts = await getDistrictsData();
         } catch (distErr) {
             console.warn("Could not load districts for llms.txt:", distErr.message);
         }
 
         // Categories & Products from Master Catalog
-        const catalogData = await getCategoriesData();
+        const catalogData = await fetchRawCatalogData(WEBSITE_ID);
         const categories = catalogData.categoryList || [];
         const publishedProducts = catalogData.categoryProducts || [];
 
@@ -84,7 +75,7 @@ Tags: ${[product.title, product.brand, product.category, product.subCategory, pr
         const districtText =
             districts.length > 0
                 ? districts
-                    .map((item) => `${DOMAIN}/${item.slug || item.id}`)
+                    .map((item) => `${DOMAIN}/${item.slug || item.id || item.district}`)
                     .join("\n")
                 : "No Districts Found";
 

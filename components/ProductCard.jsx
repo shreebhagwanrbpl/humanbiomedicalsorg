@@ -27,30 +27,53 @@ const ProductCard = React.memo(function ProductCard({ product, district }) {
 
         {/* Content */}
         <div>
-          <h3 className="text-2xl font-bold text-slate-900">
-            {product.title}
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            {(product.categoryProductId || product.productId) && (
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-100">
+                ID: {product.categoryProductId || product.productId}
+              </span>
+            )}
+            {product.category && product.category !== "Other Products" && (
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+                {product.category} {product.subCategory && product.subCategory !== product.category ? `› ${product.subCategory}` : ""}
+              </span>
+            )}
+          </div>
+
+          <h3 className="text-2xl font-bold text-slate-900 hover:text-sky-700 transition">
+            <Link
+              href={
+                district
+                  ? `/${district}/items/${product.slug}`
+                  : `/items/${product.slug}`
+              }
+            >
+              {product.title}
+            </Link>
           </h3>
-          <p className="mt-4 text-slate-600 leading-8 line-clamp-2">
+
+          <p className="mt-3 text-slate-600 leading-7 line-clamp-2">
             {product.description ||
               product.desc ||
               "Premium biomedical equipment designed for laboratories, hospitals and diagnostic centres."}
           </p>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-xs uppercase text-slate-400">Brand</p>
-              <p className="font-semibold mt-1">{product.brand || "N/A"}</p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
+            <div className="bg-slate-50 rounded-xl p-2.5">
+              <p className="text-[10px] uppercase font-bold text-slate-400">Brand</p>
+              <p className="font-semibold text-xs text-slate-800 mt-0.5 truncate">{product.brand || "Human Biomedicals"}</p>
             </div>
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-xs uppercase text-slate-400">Model</p>
-              <p className="font-semibold mt-1">{product.model || "N/A"}</p>
+            <div className="bg-slate-50 rounded-xl p-2.5">
+              <p className="text-[10px] uppercase font-bold text-slate-400">Model</p>
+              <p className="font-semibold text-xs text-slate-800 mt-0.5 truncate">{product.model || "Standard"}</p>
             </div>
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-xs uppercase text-slate-400">Instrument</p>
-              <p className="font-semibold mt-1">{product.instrument || "N/A"}</p>
+            <div className="bg-slate-50 rounded-xl p-2.5">
+              <p className="text-[10px] uppercase font-bold text-slate-400">Instrument</p>
+              <p className="font-semibold text-xs text-slate-800 mt-0.5 truncate">{product.instrument || "Diagnostic"}</p>
             </div>
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-xs uppercase text-slate-400">Category</p>
-              <p className="font-semibold mt-1">{product.category || "General"}</p>
+            <div className="bg-slate-50 rounded-xl p-2.5">
+              <p className="text-[10px] uppercase font-bold text-slate-400">Automation</p>
+              <p className="font-semibold text-xs text-slate-800 mt-0.5 truncate">{product.automation || product.capacity || "Available"}</p>
             </div>
           </div>
         </div>
@@ -63,7 +86,7 @@ const ProductCard = React.memo(function ProductCard({ product, district }) {
                 ? `/${district}/items/${product.slug}`
                 : `/items/${product.slug}`
             }
-            className="px-8 py-4 rounded-2xl bg-sky-700 !text-white font-semibold hover:bg-sky-800 transition"
+            className="px-8 py-4 rounded-2xl bg-sky-700 !text-white font-semibold hover:bg-sky-800 transition shadow-md hover:shadow-lg text-center w-full sm:w-auto"
           >
             Get Quote
           </Link>

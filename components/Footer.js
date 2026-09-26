@@ -12,21 +12,10 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 
 export default function Footer() {
   const [contactInfo, setContactInfo] = useState([]);
-  const [categories, setCategories] = useState([
-    "Chemiluminescence Immunoassay Analyser (CLIA)",
-    "Fully Automated Clinical Chemistry Analyser",
-    "Semi Automated Clinical Chemistry Analyser",
-    "Electrolyte Analyser",
-    "Hematology Analyser",
-    "Urine Analyser",
-    "Laboratory Instruments",
-    "Hospital Equipment",
-  ]);
+  const [categories, setCategories] = useState([]);
 
   const pathname = usePathname();
 
@@ -42,36 +31,30 @@ export default function Footer() {
   // DYNAMIC BASE
   const basePath = district ? `/${district}` : "";
 
-  // FETCH FIREBASE DATA & CATEGORIES
+  // FETCH DATA FROM SQLITE ADMIN API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "humanbiomedicalsorg", "pages", "contact")
-        );
-
-        if (snap.exists()) {
-          setContactInfo(snap.data().contactInfo || []);
+        // Fetch Contact Info
+        const contactRes = await fetch("/api/site-data?type=contact");
+        if (contactRes.ok) {
+          const contactJson = await contactRes.json();
+          if (contactJson.success && contactJson.data) {
+            setContactInfo(contactJson.data.contactInfo || []);
+          }
         }
 
-        // Fetch dynamic categories list
-        const catSnap = await getDocs(
-          collection(
-            db,
-            "websites",
-            "humanbiomedicalsorg",
-            "pages",
-            "categoryproducts",
-            "categories"
-          )
-        );
-
-        if (!catSnap.empty) {
-          const fetchedCats = catSnap.docs
-            .map((doc) => doc.data().category || doc.id)
-            .filter(Boolean);
-          if (fetchedCats.length > 0) {
-            setCategories(fetchedCats);
+        // Fetch Categories
+        const catRes = await fetch("/api/catalog");
+        if (catRes.ok) {
+          const catJson = await catRes.json();
+          if (catJson.success && Array.isArray(catJson.categories)) {
+            const fetchedCats = catJson.categories
+              .map((c) => (typeof c === "string" ? c : c.name || c.category || c.id))
+              .filter(Boolean);
+            if (fetchedCats.length > 0) {
+              setCategories(fetchedCats);
+            }
           }
         }
       } catch (err) {
@@ -93,6 +76,53 @@ export default function Footer() {
     return found?.value || "";
   };
 
+  // EXTRACT DYNAMIC PHONE NUMBERS (SUPPORTS MULTIPLE)
+  const getPhoneNumbers = () => {
+    const phoneItems = contactInfo.filter((item) =>
+      ["phone", "mobile", "contact", "call", "tel", "phone number", "phone numbers", "contact number", "mobile number"].some(
+        (label) => item.label?.toLowerCase().trim().includes(label)
+      )
+    );
+
+    const phones = [];
+    phoneItems.forEach((item) => {
+      if (item.value) {
+        const parts = String(item.value)
+          .split(/[,/\n;]+/)
+          .map((p) => p.trim())
+          .filter(Boolean);
+        phones.push(...parts);
+      }
+    });
+
+    return [...new Set(phones)];
+  };
+
+  // EXTRACT DYNAMIC EMAILS (SUPPORTS MULTIPLE)
+  const getEmails = () => {
+    const emailItems = contactInfo.filter((item) =>
+      ["email", "mail", "email address"].some(
+        (label) => item.label?.toLowerCase().trim().includes(label)
+      )
+    );
+
+    const emails = [];
+    emailItems.forEach((item) => {
+      if (item.value) {
+        const parts = String(item.value)
+          .split(/[,/\n;]+/)
+          .map((e) => e.trim())
+          .filter(Boolean);
+        emails.push(...parts);
+      }
+    });
+
+    return [...new Set(emails)];
+  };
+
+  const phoneNumbers = getPhoneNumbers();
+  const emailAddresses = getEmails();
+
   const originalAddress = getValue("Address", "Office Location");
 
   const city = district
@@ -104,7 +134,7 @@ export default function Footer() {
   const finalAddress =
     city && state && city.toLowerCase() !== "jaipur"
       ? `${city}, ${state}, India`
-      : originalAddress || "Jaipur, Rajasthan, India";
+      : originalAddress;
 
   return (
     <footer className="pt-16 bg-slate-900 text-slate-300">
@@ -125,10 +155,11 @@ export default function Footer() {
               {getValue("Company", "Company Name") || "Human Biomedicals LLP"}
             </h2>
 
-            <p className="mt-5 text-slate-400 text-sm leading-7">
-              {getValue("Description", "About") ||
-                "Trusted supplier of medical laboratory instruments, hospital equipment, pathology systems, and diagnostic technology across India."}
-            </p>
+            {getValue("Description", "About") && (
+              <p className="mt-5 text-slate-400 text-sm leading-7">
+                {getValue("Description", "About")}
+              </p>
+            )}
 
             {/* Social Icons */}
             <div className="flex gap-3.5 mt-6">
@@ -202,7 +233,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 3: Product Categories (CLICKABLE TO ITEM CATEGORY) */}
+          {/* Column 3: Product Categories */}
           <div>
             <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-6 pb-2 border-b border-slate-800">
               Product Categories
@@ -228,66 +259,85 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 4: Contact Info (UPDATED NUMBERS) */}
-          <div>
-            <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-6 pb-2 border-b border-slate-800">
-              Contact Info
-            </h3>
+          {/* Column 4: Contact Info (DYNAMIC ONLY) */}
+          {(phoneNumbers.length > 0 || emailAddresses.length > 0 || finalAddress) && (
+            <div>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-6 pb-2 border-b border-slate-800">
+                Contact Info
+              </h3>
 
-            <div className="space-y-4 text-sm">
-              {/* Phone Numbers */}
-              <div className="flex items-start gap-3.5">
-                <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
-                  <Phone size={18} />
-                </div>
-                <div>
-                  <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">Phone Numbers</p>
-                  <a
-                    href="tel:+919251598228"
-                    className="text-white hover:text-sky-400 font-semibold block mt-0.5 transition"
-                  >
-                    +91 9251598228
-                  </a>
-                  <a
-                    href="tel:+918112279728"
-                    className="text-white hover:text-sky-400 font-semibold block mt-0.5 transition"
-                  >
-                    +91 8112279728
-                  </a>
-                </div>
+              <div className="space-y-4 text-sm">
+                {/* Phone Numbers */}
+                {phoneNumbers.length > 0 && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
+                      <Phone size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">
+                        Phone {phoneNumbers.length > 1 ? "Numbers" : "Number"}
+                      </p>
+                      <div className="mt-1 space-y-1">
+                        {phoneNumbers.map((ph, idx) => {
+                          const cleanPh = ph.replace(/[^\d+]/g, "");
+                          return (
+                            <a
+                              key={idx}
+                              href={`tel:${cleanPh}`}
+                              className="text-white hover:text-sky-400 font-semibold block transition"
+                            >
+                              {ph}
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Email Address */}
+                {emailAddresses.length > 0 && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
+                      <Mail size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">
+                        Email {emailAddresses.length > 1 ? "Addresses" : "Address"}
+                      </p>
+                      <div className="mt-1 space-y-1">
+                        {emailAddresses.map((em, idx) => (
+                          <a
+                            key={idx}
+                            href={`mailto:${em}`}
+                            className="text-slate-300 hover:text-sky-400 font-medium block transition break-all"
+                          >
+                            {em}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Address */}
+                {finalAddress && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
+                      <MapPin size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">Location</p>
+                      <p className="text-slate-300 font-medium leading-relaxed mt-0.5">
+                        {finalAddress}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
               </div>
-
-              {/* Email */}
-              <div className="flex items-start gap-3.5">
-                <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">Email Address</p>
-                  <a
-                    href={`mailto:${getValue("Email", "Email Address") || "info@humanbiomedicals.org"}`}
-                    className="text-slate-300 hover:text-sky-400 font-medium block mt-0.5 transition break-all"
-                  >
-                    {getValue("Email", "Email Address") || "info@humanbiomedicals.org"}
-                  </a>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="flex items-start gap-3.5">
-                <div className="p-2.5 rounded-lg bg-slate-800 text-violet-400 shrink-0">
-                  <MapPin size={18} />
-                </div>
-                <div>
-                  <p className="text-xs uppercase text-slate-500 font-bold tracking-wider">Location</p>
-                  <p className="text-slate-300 font-medium leading-relaxed mt-0.5">
-                    {finalAddress}
-                  </p>
-                </div>
-              </div>
-
             </div>
-          </div>
+          )}
 
         </div>
 

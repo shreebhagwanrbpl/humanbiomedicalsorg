@@ -164,12 +164,18 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     setProductsList(initialProducts);
   }, [initialProducts]);
 
-  // Live real-time background sync with /api/catalog on mount and when window gains focus
+  // Live real-time background sync with /api/catalog on mount, every 3 seconds, and on window focus
   useEffect(() => {
     let isMounted = true;
     const syncLatestProducts = async () => {
       try {
-        const res = await fetch("/api/catalog", { cache: "no-store" });
+        const res = await fetch("/api/catalog", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "Pragma": "no-cache",
+          },
+        });
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.products) && isMounted) {
@@ -182,9 +188,12 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     };
 
     syncLatestProducts();
+    const interval = setInterval(syncLatestProducts, 3000);
     window.addEventListener("focus", syncLatestProducts);
+
     return () => {
       isMounted = false;
+      clearInterval(interval);
       window.removeEventListener("focus", syncLatestProducts);
     };
   }, []);
@@ -225,13 +234,19 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         const model = (item.model || "").toLowerCase();
         const category = (item.category || "").toLowerCase();
         const subCategory = (item.subCategory || "").toLowerCase();
+        const prodId = (item.categoryProductId || item.productId || "").toLowerCase();
+        const instrument = (item.instrument || "").toLowerCase();
+        const parameters = (item.parameters || "").toLowerCase();
 
         return (
           title.includes(query) ||
           brand.includes(query) ||
           model.includes(query) ||
           category.includes(query) ||
-          subCategory.includes(query)
+          subCategory.includes(query) ||
+          prodId.includes(query) ||
+          instrument.includes(query) ||
+          parameters.includes(query)
         );
       })
       : productsList;
@@ -583,31 +598,35 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                     {/* Subcategories */}
                     <div className="space-y-12">
                       {Object.entries(subcategoriesObj).map(
-                        (([subCategory, list]) => (
-                          <div key={subCategory} className="space-y-6">
-                            {/* Subcategory Heading */}
-                            <div className="flex items-center gap-3">
-                              <h3 className="text-xl font-bold text-slate-800 uppercase tracking-wide">
-                                {subCategory}
-                              </h3>
-                              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                                {list.length}{" "}
-                                {list.length === 1 ? "Product" : "Products"}
-                              </span>
-                            </div>
+                        (([subCategory, list]) => {
+                          const showSubHeader = Object.keys(subcategoriesObj).length > 1 || (subCategory !== category && subCategory !== "Other Products" && subCategory !== "General");
+                          return (
+                            <div key={subCategory} className="space-y-6">
+                              {/* Subcategory Heading */}
+                              {showSubHeader && (
+                                <div className="flex items-center gap-3">
+                                  <h3 className="text-xl font-bold text-slate-800 uppercase tracking-wide">
+                                    {subCategory}
+                                  </h3>
+                                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                    {list.length}{" "}
+                                    {list.length === 1 ? "Product" : "Products"}
+                                  </span>
+                                </div>
+                              )}
 
-
-                            <div className="space-y-8">
-                              {list.slice(0, 12).map((product, idx) => (
-                                <ProductCard
-                                  key={product.uid ? `${product.uid}-${idx}` : `${product.id || product.slug || "prod"}-${idx}`}
-                                  product={product}
-                                  district={district}
-                                />
-                              ))}
+                              <div className="space-y-8">
+                                {list.map((product, idx) => (
+                                  <ProductCard
+                                    key={product.uid ? `${product.uid}-${idx}` : `${product.id || product.slug || "prod"}-${idx}`}
+                                    product={product}
+                                    district={district}
+                                  />
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          );
+                        })
                       )}
                     </div>
                   </section>

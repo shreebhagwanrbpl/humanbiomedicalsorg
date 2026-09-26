@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-import { getProductsData } from "@/lib/db-server";
+import { getProductsData } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,7 +32,7 @@ export async function GET(request) {
       });
     }
 
-    return NextResponse.json(
+    return Response.json(
       {
         success: true,
         count: products.length,
@@ -47,7 +46,7 @@ export async function GET(request) {
     );
   } catch (error) {
     console.error("Error in /api/products:", error);
-    return NextResponse.json(
+    return Response.json(
       {
         success: false,
         error: error.message || "Failed to fetch products",

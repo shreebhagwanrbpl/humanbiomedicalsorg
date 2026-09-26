@@ -15,12 +15,6 @@ import {
     Download,
 } from "lucide-react";
 
-import {
-    addDoc,
-    collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
 import { generateBrochurePDF, getProductMainImage, resolveImageUrl } from "@/lib/generateBrochurePDF";
 
 export default function ProductDetails({ slug, product: initialProduct }) {
@@ -65,34 +59,57 @@ export default function ProductDetails({ slug, product: initialProduct }) {
     const cityName = city.charAt(0).toUpperCase() + city.slice(1);
 
     useEffect(() => {
+        let isMounted = true;
+
         if (initialProduct) {
             setProduct(initialProduct);
             setSelectedImage(getProductMainImage(initialProduct));
             setSelectedMedia("image");
             setLoading(false);
-            return;
         }
 
         const loadProduct = async () => {
             try {
-                setLoading(true);
-                const allProducts = await fetchFullCatalog();
-                const found = allProducts.find((p) => p.slug === slug);
+                const res = await fetch("/api/catalog", {
+                    cache: "no-store",
+                    headers: {
+                        "Cache-Control": "no-store, no-cache, must-revalidate",
+                        "Pragma": "no-cache",
+                    },
+                });
+                if (res.ok && isMounted) {
+                    const json = await res.json();
+                    const allProducts = json.products || [];
+                    const found = allProducts.find(
+                        (p) =>
+                            p.slug === slug ||
+                            p.id === slug ||
+                            p.productId === slug ||
+                            p.categoryProductId === slug
+                    );
 
-                setProduct(found || null);
+                    setProduct(found || null);
 
-                if (found) {
-                    setSelectedImage(getProductMainImage(found));
-                    setSelectedMedia("image");
+                    if (found) {
+                        setSelectedImage((prev) => prev || getProductMainImage(found));
+                    }
                 }
             } catch (error) {
                 console.error("Error loading product details:", error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         loadProduct();
+        const interval = setInterval(loadProduct, 3000);
+        window.addEventListener("focus", loadProduct);
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+            window.removeEventListener("focus", loadProduct);
+        };
     }, [slug, initialProduct]);
 
     const handleSubmit = async (e) => {
@@ -116,22 +133,26 @@ export default function ProductDetails({ slug, product: initialProduct }) {
         try {
             setSubmitting(true);
 
-            await addDoc(
-                collection(
-                    db,
-                    "websitesQueries",
-                    "humanbiomedicalsorg",
-                    "productQueries"
-                ),
-                {
+            const res = await fetch("/api/product-query", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
                     ...form,
-                    productName: product.title,
-                    productSlug: product.slug,
-                    brand: product.brand || "",
-                    model: product.model || "",
-                    createdAt: new Date(),
-                }
-            );
+                    productName: product?.title || "",
+                    productSlug: product?.slug || slug || "",
+                    brand: product?.brand || "",
+                    model: product?.model || "",
+                    websiteId: "humanbiomedicalsorg",
+                }),
+            });
+
+            const result = await res.json();
+
+            if (!res.ok || !result.success) {
+                throw new Error(result.error || "Failed to submit enquiry");
+            }
 
             toast.success("Your enquiry has been submitted successfully.");
 
@@ -142,7 +163,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
             });
         } catch (error) {
             console.error("Error submitting query:", error);
-            toast.error("Something went wrong");
+            toast.error(error.message || "Something went wrong");
         } finally {
             setSubmitting(false);
         }

@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function Products({ city, district }) {
@@ -21,26 +20,42 @@ export default function Products({ city, district }) {
       : "";
 
   useEffect(() => {
+    let isMounted = true;
     const loadFeaturedProducts = async () => {
       try {
-        setLoading(true);
-        const catalog = await fetchFullCatalog();
-
-        if (catalog && catalog.length > 0) {
-          // Take top 6 published products
-          const published = catalog
-            .filter((item) => item.isPublished !== false)
-            .slice(0, 6);
-          setProducts(published);
+        const res = await fetch("/api/catalog", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "Pragma": "no-cache",
+          },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const catalog = json.products || [];
+          if (isMounted) {
+            const published = (catalog || [])
+              .filter((item) => item.isPublished !== false)
+              .slice(0, 6);
+            setProducts(published);
+          }
         }
       } catch (err) {
         console.error("Error fetching featured products for home:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     loadFeaturedProducts();
+    const interval = setInterval(loadFeaturedProducts, 3000);
+    window.addEventListener("focus", loadFeaturedProducts);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", loadFeaturedProducts);
+    };
   }, []);
 
   return (

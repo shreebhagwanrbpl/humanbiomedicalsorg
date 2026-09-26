@@ -1,59 +1,30 @@
 import Contact from "@/app/contact/page";
-
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
-
-import { db } from "@/lib/firebase";
+import { getDistrictData } from "@/lib/admin-api";
 
 export default async function DistrictContactPage({
   params,
 }) {
-
-  const resolvedParams =
-    await params;
-
-  const districtSlug =
-    resolvedParams?.district;
+  const resolvedParams = await params;
+  const districtSlug = resolvedParams?.district;
 
   let districtData = null;
 
   try {
-
-    const docRef = doc(
-      db,
-      "websites",
-      "humanbiomedicalsorg",
-      "districts",
-      districtSlug
-    );
-
-    const docSnap =
-      await getDoc(docRef);
-
-    if (docSnap.exists()) {
-
-      districtData =
-        docSnap.data();
-
-    }
-
+    districtData = await getDistrictData(districtSlug);
   } catch (error) {
-
-    console.log(error);
-
+    console.error("Error fetching district contact data:", error);
   }
+
+  const fallbackCity = districtSlug
+    ? districtSlug
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+    : "";
 
   return (
     <Contact
-      city={
-        districtData?.district
-      }
-      state={
-        districtData?.state
-      }
+      city={districtData?.district || fallbackCity}
+      state={districtData?.state || "India"}
     />
   );
-
 }

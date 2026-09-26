@@ -14,17 +14,15 @@ import {
 } from "lucide-react";
 
 import { useEffect, useState } from "react";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
 
 // STATIC ICONS
 const serviceIcons = [
-  <Microscope size={34} />,
-  <Hospital size={34} />,
-  <ShieldCheck size={34} />,
-  <Truck size={34} />,
-  <Wrench size={34} />,
-  <Settings size={34} />,
+  <Microscope size={34} key="microscope" />,
+  <Hospital size={34} key="hospital" />,
+  <ShieldCheck size={34} key="shield" />,
+  <Truck size={34} key="truck" />,
+  <Wrench size={34} key="wrench" />,
+  <Settings size={34} key="settings" />,
 ];
 
 // STATIC PROCESS
@@ -36,51 +34,34 @@ const process = [
   "Technical Support",
 ];
 
-export default function ServicesPage({ city },) {
+export default function ServicesPage({ city }) {
 
   const [services, setServices] = useState([]);
-
 
   const router = useRouter();
 
   const basePath = city
     ? `/${city.toLowerCase().replace(/\s+/g, "-")}`
     : "";
-  // FETCH SERVICES
+
+  // FETCH SERVICES FROM SQLITE ADMIN API
   useEffect(() => {
-
     const fetchData = async () => {
-
       try {
-
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "humanbiomedicalsorg",
-            "pages",
-            "services"
-          )
-        );
-
-        if (snap.exists()) {
-
-          const data = snap.data().services || [];
-
-          setServices(data);
-
+        const res = await fetch("/api/site-data?type=services");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const data = json.data.services || (Array.isArray(json.data) ? json.data : []);
+            setServices(data);
+          }
         }
-
       } catch (err) {
-
-        console.error(err);
-
+        console.error("Error loading services data:", err);
       }
-
     };
 
     fetchData();
-
   }, []);
 
   return (
@@ -128,75 +109,75 @@ export default function ServicesPage({ city },) {
       </section>
 
       {/* SERVICES */}
-      <section className="pb-24">
+      {services.length > 0 && (
+        <section className="pb-24">
 
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
-          {/* Heading */}
-          <div className="max-w-3xl">
+            {/* Heading */}
+            <div className="max-w-3xl">
 
-            <span className="inline-flex rounded-full bg-slate-100 px-5 py-2 text-sm font-semibold text-slate-700">
-              Our Expertise
-            </span>
+              <span className="inline-flex rounded-full bg-slate-100 px-5 py-2 text-sm font-semibold text-slate-700">
+                Our Expertise
+              </span>
 
-            <h2 className="mt-6 text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
-              Premium Healthcare Technology Services
-            </h2>
+              <h2 className="mt-6 text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                Premium Healthcare Technology Services
+              </h2>
+
+            </div>
+
+            {/* Grid */}
+            <div className="mt-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
+
+              {services.map((item, index) => (
+
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 35 }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.08,
+                  }}
+                  viewport={{ once: true }}
+                  className="group bg-white rounded-[32px] border border-slate-200 p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-500"
+                >
+
+                  {/* STATIC ICON */}
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-violet-600 to-sky-500 text-white flex items-center justify-center shadow-lg">
+                    {serviceIcons[index % serviceIcons.length]}
+                  </div>
+
+                  {/* DYNAMIC TITLE */}
+                  <h3 className="mt-8 text-3xl font-bold text-slate-900 leading-snug">
+                    {item.title}
+                  </h3>
+
+                  {/* DYNAMIC DESC */}
+                  <p className="mt-5 text-slate-600 leading-8">
+                    {item.desc || item.description}
+                  </p>
+
+                  {/* Button */}
+                  <button className="mt-8 flex items-center gap-2 text-violet-600 font-semibold hover:gap-4 transition-all duration-300">
+                    Learn More
+                    <ArrowRight size={18} />
+                  </button>
+
+                </motion.div>
+
+              ))}
+
+            </div>
 
           </div>
 
-          {/* Grid */}
-          <div className="mt-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
-
-            {services.map((item, index) => (
-
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.08,
-                }}
-                viewport={{ once: true }}
-                className="group bg-white rounded-[32px] border border-slate-200 p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-500"
-              >
-
-                {/* STATIC ICON */}
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-violet-600 to-sky-500 text-white flex items-center justify-center shadow-lg">
-
-                  {serviceIcons[index % serviceIcons.length]}
-
-                </div>
-
-                {/* DYNAMIC TITLE */}
-                <h3 className="mt-8 text-3xl font-bold text-slate-900 leading-snug">
-                  {item.title}
-                </h3>
-
-                {/* DYNAMIC DESC */}
-                <p className="mt-5 text-slate-600 leading-8">
-                  {item.desc}
-                </p>
-
-                {/* Button */}
-                <button className="mt-8 flex items-center gap-2 text-violet-600 font-semibold hover:gap-4 transition-all duration-300">
-                  Learn More
-                  <ArrowRight size={18} />
-                </button>
-
-              </motion.div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      </section>
+        </section>
+      )}
 
       {/* PROCESS */}
       <section className="pb-24">

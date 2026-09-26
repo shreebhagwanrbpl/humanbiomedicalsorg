@@ -10,55 +10,35 @@ import {
 
 import { useEffect, useState } from "react";
 
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-
 // STATIC ICONS
 const serviceIcons = [
-  <Microscope size={38} />,
-  <Hospital size={38} />,
-  <ShieldCheck size={38} />,
+  <Microscope size={38} key="microscope" />,
+  <Hospital size={38} key="hospital" />,
+  <ShieldCheck size={38} key="shield" />,
 ];
 
 export default function Features() {
 
   const [services, setServices] = useState([]);
 
-  // FETCH SERVICES FROM FIREBASE
+  // FETCH SERVICES FROM SQLITE ADMIN API
   useEffect(() => {
-
     const fetchServices = async () => {
-
       try {
-
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "humanbiomedicalsorg",
-            "pages",
-            "services"
-          )
-        );
-
-        if (snap.exists()) {
-
-          const data = snap.data().services || [];
-
-          setServices(data);
-
+        const res = await fetch("/api/site-data?type=services");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const data = json.data.services || (Array.isArray(json.data) ? json.data : []);
+            setServices(data);
+          }
         }
-
       } catch (err) {
-
-        console.error(err);
-
+        console.error("Error loading services for features:", err);
       }
-
     };
 
     fetchServices();
-
   }, []);
 
   return (
@@ -96,41 +76,37 @@ export default function Features() {
         </motion.div>
 
         {/* Feature Cards */}
-        <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.length > 0 && (
+          <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.slice(0, 3).map((item, index) => (
+              <motion.div
+                key={item.title || index}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                viewport={{ once: true }}
+                className="glass rounded-[30px] p-8 shadow-xl hover:-translate-y-2 transition duration-300"
+              >
 
-          {services.slice(0, 3).map((item, index) => (
+                {/* STATIC ICON */}
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-sky-500 text-white flex items-center justify-center">
+                  {serviceIcons[index % serviceIcons.length]}
+                </div>
 
-            <motion.div
-              key={item.title || index}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-              viewport={{ once: true }}
-              className="glass rounded-[30px] p-8 shadow-xl hover:-translate-y-2 transition duration-300"
-            >
+                {/* DYNAMIC TITLE */}
+                <h3 className="mt-7 text-2xl font-bold text-slate-900">
+                  {item.title}
+                </h3>
 
-              {/* STATIC ICON */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-sky-500 text-white flex items-center justify-center">
+                {/* DYNAMIC DESCRIPTION */}
+                <p className="mt-4 text-slate-600 leading-8">
+                  {item.desc || item.description}
+                </p>
 
-                {serviceIcons[index % serviceIcons.length]}
-
-              </div>
-
-              {/* DYNAMIC TITLE */}
-              <h3 className="mt-7 text-2xl font-bold text-slate-900">
-                {item.title}
-              </h3>
-
-              {/* DYNAMIC DESCRIPTION */}
-              <p className="mt-4 text-slate-600 leading-8">
-                {item.desc}
-              </p>
-
-            </motion.div>
-
-          ))}
-
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
       </div>
 

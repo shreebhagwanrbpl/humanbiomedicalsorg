@@ -8,8 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "firebase": "^12.13.0",
-    "firebase-admin": "^14.1.0",
     "framer-motion": "^11.0.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",

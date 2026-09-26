@@ -1,6 +1,4 @@
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { fetchFullCatalog } from "@/lib/db-server";
+import { fetchFullCatalog, getDistrictsData } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -12,12 +10,11 @@ export default async function sitemap() {
     // 1. Fetch District URLs
     let districtUrls = [];
     try {
-      const snapshot = await getDocs(
-        collection(db, "websites", "humanbiomedicalsorg", "districts")
-      );
+      const districts = await getDistrictsData();
 
-      districtUrls = snapshot.docs.flatMap((doc) => {
-        const district = doc.id;
+      districtUrls = (districts || []).flatMap((doc) => {
+        const district = doc.slug || doc.id || doc.district;
+        if (!district) return [];
         return [
           {
             url: `${baseUrl}/${district}`,
@@ -59,7 +56,7 @@ export default async function sitemap() {
     let productUrls = [];
     try {
       const products = await fetchFullCatalog();
-      productUrls = products.map((prod) => ({
+      productUrls = (products || []).map((prod) => ({
         url: `${baseUrl}/items/${prod.slug}`,
         lastModified: prod.updatedAt ? new Date(prod.updatedAt) : new Date(),
         changeFrequency: "weekly",
