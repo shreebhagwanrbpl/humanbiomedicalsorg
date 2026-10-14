@@ -1,11 +1,12 @@
 import { ADMIN_API_BASE_URL, WEBSITE_ID } from "@/lib/admin-api";
+import { insertQueryToMongo } from "@/lib/mongodb";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, email, phone, productName, productSlug, brand, model } = body;
+    const { name, email, phone, productName, productSlug, brand, model, message, district } = body;
 
     if (!name || !name.trim()) {
       return Response.json(
@@ -29,6 +30,7 @@ export async function POST(request) {
     }
 
     const payload = {
+      type: "product",
       name: name.trim(),
       email: email.trim(),
       phone: phone.trim(),
@@ -36,30 +38,38 @@ export async function POST(request) {
       productSlug: (productSlug || "").trim(),
       brand: (brand || "").trim(),
       model: (model || "").trim(),
+      message: (message || "").trim(),
+      district: (district || "").trim(),
       websiteId: body.websiteId || WEBSITE_ID,
       createdAt: new Date().toISOString(),
     };
 
-    // Forward to SQLite Admin API backend
+    // 1. Save directly into MongoDB queries collection for SuperAdmin
+    let mongoResult = null;
     try {
-      const adminRes = await fetch(`${ADMIN_API_BASE_URL}/api/product-query`, {
+      mongoResult = await insertQueryToMongo(payload);
+    } catch (mongoErr) {
+      console.warn("Error inserting product query to MongoDB:", mongoErr.message);
+    }
+
+    // 2. Also forward to SuperAdmin API
+    try {
+      const adminUrl = `${ADMIN_API_BASE_URL}/api/product-query`;
+      await fetch(adminUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      });
-
-      if (!adminRes.ok && adminRes.status !== 404) {
-        console.warn("Admin API product-query returned status:", adminRes.status);
-      }
+      }).catch(() => {});
     } catch (forwardErr) {
       console.warn("Could not forward product query to admin backend:", forwardErr.message);
     }
 
     return Response.json({
       success: true,
-      message: "Product enquiry submitted successfully",
+      message: "Product quotation request submitted successfully! Our technical team will reach out promptly.",
+      queryId: mongoResult?.queryId || null,
     });
   } catch (error) {
     console.error("Error in /api/product-query:", error);

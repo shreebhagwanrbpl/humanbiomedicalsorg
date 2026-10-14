@@ -164,18 +164,13 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     setProductsList(initialProducts);
   }, [initialProducts]);
 
-  // Live real-time background sync with /api/catalog on mount, every 3 seconds, and on window focus
+  // Fetch latest products once on mount only if initialProducts was empty
   useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) return;
     let isMounted = true;
     const syncLatestProducts = async () => {
       try {
-        const res = await fetch("/api/catalog", {
-          cache: "no-store",
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate",
-            "Pragma": "no-cache",
-          },
-        });
+        const res = await fetch("/api/catalog");
         if (res.ok) {
           const json = await res.json();
           if (json.success && Array.isArray(json.products) && isMounted) {
@@ -188,15 +183,11 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     };
 
     syncLatestProducts();
-    const interval = setInterval(syncLatestProducts, 3000);
-    window.addEventListener("focus", syncLatestProducts);
 
     return () => {
       isMounted = false;
-      clearInterval(interval);
-      window.removeEventListener("focus", syncLatestProducts);
     };
-  }, []);
+  }, [initialProducts]);
 
   // Sync category or search from URL parameters
   useEffect(() => {

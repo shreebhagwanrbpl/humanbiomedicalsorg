@@ -1,7 +1,6 @@
-import { fetchSiteDataFromAdmin, WEBSITE_ID, ADMIN_API_BASE_URL } from "@/lib/admin-api";
+import { fetchSiteDataFromAdmin, WEBSITE_ID } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export async function GET(request) {
   try {
@@ -20,7 +19,7 @@ export async function GET(request) {
       },
       {
         headers: {
-          "Cache-Control": "no-store, max-age=0",
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
         },
       }
     );

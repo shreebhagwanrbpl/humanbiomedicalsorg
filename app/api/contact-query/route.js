@@ -1,11 +1,12 @@
 import { ADMIN_API_BASE_URL, WEBSITE_ID } from "@/lib/admin-api";
+import { insertQueryToMongo } from "@/lib/mongodb";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, email, phone, subject, message } = body;
+    const { name, email, phone, subject, message, district } = body;
 
     if (!name || !name.trim()) {
       return Response.json(
@@ -29,35 +30,43 @@ export async function POST(request) {
     }
 
     const payload = {
+      type: "contact",
       name: name.trim(),
       email: email.trim(),
       phone: phone.trim(),
       subject: (subject || "").trim(),
       message: (message || "").trim(),
+      district: (district || "").trim(),
       websiteId: body.websiteId || WEBSITE_ID,
       createdAt: new Date().toISOString(),
     };
 
-    // Forward to SQLite Admin API backend
+    // 1. Save directly into MongoDB queries collection for SuperAdmin
+    let mongoResult = null;
     try {
-      const adminRes = await fetch(`${ADMIN_API_BASE_URL}/api/contact-query`, {
+      mongoResult = await insertQueryToMongo(payload);
+    } catch (mongoErr) {
+      console.warn("Error inserting contact query to MongoDB:", mongoErr.message);
+    }
+
+    // 2. Also forward to SuperAdmin API
+    try {
+      const adminUrl = `${ADMIN_API_BASE_URL}/api/contact-query`;
+      await fetch(adminUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      });
-
-      if (!adminRes.ok && adminRes.status !== 404) {
-        console.warn("Admin API contact-query returned status:", adminRes.status);
-      }
+      }).catch(() => {});
     } catch (forwardErr) {
       console.warn("Could not forward contact query to admin backend:", forwardErr.message);
     }
 
     return Response.json({
       success: true,
-      message: "Query submitted successfully",
+      message: "Your message has been received! Our biomedical team will contact you shortly.",
+      queryId: mongoResult?.queryId || null,
     });
   } catch (error) {
     console.error("Error in /api/contact-query:", error);

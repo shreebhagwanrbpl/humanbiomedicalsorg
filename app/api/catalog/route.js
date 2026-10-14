@@ -1,8 +1,6 @@
 import { fetchRawCatalogData, WEBSITE_ID } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
 
 export async function GET(request) {
   try {
@@ -22,10 +20,7 @@ export async function GET(request) {
       },
       {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-          "Pragma": "no-cache",
-          "Expires": "0",
-          "Surrogate-Control": "no-store",
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
         },
       }
     );
@@ -41,7 +36,7 @@ export async function GET(request) {
       {
         status: 500,
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Cache-Control": "no-store",
         },
       }
     );

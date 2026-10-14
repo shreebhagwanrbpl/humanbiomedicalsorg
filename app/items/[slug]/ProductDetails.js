@@ -66,17 +66,12 @@ export default function ProductDetails({ slug, product: initialProduct }) {
             setSelectedImage(getProductMainImage(initialProduct));
             setSelectedMedia("image");
             setLoading(false);
+            return;
         }
 
         const loadProduct = async () => {
             try {
-                const res = await fetch("/api/catalog", {
-                    cache: "no-store",
-                    headers: {
-                        "Cache-Control": "no-store, no-cache, must-revalidate",
-                        "Pragma": "no-cache",
-                    },
-                });
+                const res = await fetch("/api/catalog");
                 if (res.ok && isMounted) {
                     const json = await res.json();
                     const allProducts = json.products || [];
@@ -102,13 +97,9 @@ export default function ProductDetails({ slug, product: initialProduct }) {
         };
 
         loadProduct();
-        const interval = setInterval(loadProduct, 3000);
-        window.addEventListener("focus", loadProduct);
 
         return () => {
             isMounted = false;
-            clearInterval(interval);
-            window.removeEventListener("focus", loadProduct);
         };
     }, [slug, initialProduct]);
 
@@ -181,7 +172,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                 product.title,
             brand: {
                 "@type": "Brand",
-                name: product.brand || "Central Biomedicals",
+                name: product.brand || "Human Biomedicals",
             },
         }
         : null;
