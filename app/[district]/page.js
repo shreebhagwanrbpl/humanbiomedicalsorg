@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import HomePage from "../page";
 
 export async function generateMetadata({ params }) {

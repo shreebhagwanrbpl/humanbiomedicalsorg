@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import Contact from "@/app/contact/page";
 import { getDistrictData } from "@/lib/admin-api";
 
