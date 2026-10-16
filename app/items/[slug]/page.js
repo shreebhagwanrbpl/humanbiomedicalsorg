@@ -6,9 +6,10 @@ export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    const product = await getProductBySlug(slug);
+    const decodedSlug = decodeURIComponent(slug || "").trim();
+    const product = await getProductBySlug(decodedSlug);
 
-    const productName = product?.title || slug
+    const productName = product?.title || decodedSlug
         ?.replace(/-/g, " ")
         ?.replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }) {
 
     const description = product?.description || product?.desc || `Buy ${productName} at best price in India. Trusted supplier, dealer and distributor of ${productName} for hospitals, laboratories, diagnostic centers, research institutes and healthcare facilities. Contact Human Biomedicals for latest quotation and product details.`;
 
-    const url = `https://humanbiomedicals.org/items/${slug}`;
+    const url = `https://humanbiomedicals.org/items/${decodedSlug}`;
 
     return {
         title,
@@ -86,7 +87,8 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
     const { slug } = await params;
-    const product = await getProductBySlug(slug);
+    const decodedSlug = decodeURIComponent(slug || "").trim();
+    const product = await getProductBySlug(decodedSlug);
 
-    return <ProductDetails slug={slug} product={product} />;
+    return <ProductDetails slug={decodedSlug} product={product} />;
 }

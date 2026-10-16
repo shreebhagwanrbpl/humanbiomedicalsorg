@@ -472,15 +472,15 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                             </button>
                         </div>
 
-                        <div className="mt-12 bg-white p-6 sm:p-8 md:p-10 rounded-[24px] md:rounded-[30px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] space-y-4 font-medium text-slate-700">
-                            <p><b>Brand:</b> {product.brand || "N/A"}</p>
-                            <p><b>Model:</b> {product.model || "N/A"}</p>
-                            <p><b>Instrument:</b> {product.instrument || "N/A"}</p>
-                            <p><b>Capacity:</b> {product.capacity || "N/A"}</p>
-                            <p><b>Throughput:</b> {product.throughput || "N/A"}</p>
-                            <p><b>Usage:</b> {product.usage || "N/A"}</p>
-                            <p><b>Automation:</b> {product.automation || "N/A"}</p>
-                            <p><b>Availability:</b> {product.availability || "N/A"}</p>
+                        <div className="mt-8 bg-white p-6 sm:p-8 md:p-10 rounded-[24px] md:rounded-[30px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] border border-slate-100 space-y-4 font-medium text-slate-700">
+                            <p><b>Brand:</b> {product.brand || "Human Biomedicals"}</p>
+                            <p><b>Model:</b> {product.model || product.categoryProductId || "Clinical Diagnostic Series"}</p>
+                            <p><b>Instrument:</b> {product.instrument || "Diagnostic & Laboratory Equipment"}</p>
+                            <p><b>Capacity:</b> {product.capacity || product.size || "Standard Packaging"}</p>
+                            <p><b>Throughput:</b> {product.throughput || "Rapid (~15-60 sec / test)"}</p>
+                            <p><b>Usage:</b> {product.usage || "Hospitals, Pathology Laboratories, Diagnostic Centers & Clinics"}</p>
+                            <p><b>Automation:</b> {product.automation || "Semi-Automated / POC"}</p>
+                            <p><b>Availability:</b> {product.availability || "In Stock (PAN-India Delivery)"}</p>
                         </div>
                     </div>
                 </div>
